@@ -6,6 +6,8 @@ import connectDB from "./config/mongodb.js"
 import userRoutes from "./routes/user.route.js"
 import oauthRoutes from "./routes/auth.route.js"
 import betRoutes from "./routes/bet.route.js"
+import razorpayRoutes from "./routes/razorpay.route.js"
+import payoutRoutes from "./routes/payout.route.js"
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -22,6 +24,8 @@ app.use(cors({
 app.use("/api/user", userRoutes)
 app.use("/api/auth", oauthRoutes);
 app.use("/api/bet", betRoutes);
+app.use("/api/payout", payoutRoutes)
+app.use("/api/razorpay", razorpayRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on PORT:${port}`);

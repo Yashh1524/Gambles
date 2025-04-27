@@ -30,7 +30,7 @@ export const createBetController = async (req, res) => {
 
 export const getAllBetsController = async (req, res) => {
     try {
-        const bets = await betModel.find().populate("User"); // optional: populate user
+        const bets = await betModel.find().populate("user", "name email picture isVerified wallet");
         res.status(200).json({
             success: true,
             data: bets
