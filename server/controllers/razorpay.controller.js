@@ -1,5 +1,4 @@
 import payoutModel from "../models/payout.model.js";
-import userModel from "../models/user.model.js";
 import { razorpayPost } from "../utils/razorpay.js";
 
 export const withdrawMoneyThroughRazorpayController = async (req, res) => {

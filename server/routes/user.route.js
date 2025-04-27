@@ -13,6 +13,7 @@ import {
     getUserDetailsController,
     getUserDetailsByEmailController,
     depositMoneyToUserWalletController,
+    updateUserDetailsController,
 } from "../controllers/user.controller.js";
 import AuthMiddleware from "../middleware/authMiddleware.js";
 
@@ -31,5 +32,6 @@ userRoutes.post("/set-new-password", setNewPassword)
 userRoutes.get("/my-details", AuthMiddleware, getUserDetailsController);
 userRoutes.get("/get-user-by-email", getUserDetailsByEmailController)
 userRoutes.post("/deposit-money", AuthMiddleware, depositMoneyToUserWalletController)
+userRoutes.patch("/update-user-details", AuthMiddleware, updateUserDetailsController)
 
 export default userRoutes;

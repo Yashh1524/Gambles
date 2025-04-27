@@ -719,48 +719,49 @@ export const depositMoneyToUserWalletController = async (req, res) => {
     }
 }
 
-// export const withdrawMoneyFromUserWalletController = async (req, res) => {
-//     try {
-//         const { amount } = req.body;
+export const updateUserDetailsController = async (req, res) => {
+    try {
+        const { name, picture } = req.body;
+        const userId = req.user?.id;
 
-//         if (amount < 500) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Withdrawal amount must be at least 500."
-//             });
-//         }
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Unauthorized. User ID missing."
+            });
+        }
 
-//         const userId = req.user?.id;
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
 
-//         const user = await userModel.findById(userId);
-//         if (!user) {
-//             return res.status(404).json({
-//                 success: false,
-//                 message: "User not found."
-//             });
-//         }
+        // Update fields only if provided
+        if (name) user.name = name;
+        if (picture) user.picture = picture;
 
-//         if (user.wallet < amount) {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: "Insufficient wallet balance."
-//             });
-//         }
+        await user.save();
 
-//         user.wallet = user.wallet - amount;
-//         await user.save();
-
-//         return res.status(200).json({
-//             success: true,
-//             message: "Withdrawal successful.",
-//             wallet: user.wallet
-//         });
-
-//     } catch (error) {
-//         console.error("Withdrawal Error:", error);
-//         return res.status(500).json({
-//             success: false,
-//             message: "An error occurred while processing the withdrawal."
-//         });
-//     }
-// }
+        return res.status(200).json({
+            success: true,
+            message: "User details updated successfully.",
+            user: {
+                id: user._id,
+                name: user.name,
+                email: user.email,
+                picture: user.picture,
+                wallet: user.wallet,
+                isVerified: user.isVerified
+            }
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+};
