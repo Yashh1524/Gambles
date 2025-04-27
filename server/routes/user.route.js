@@ -12,6 +12,7 @@ import {
     setNewPassword,
     getUserDetailsController,
     getUserDetailsByEmailController,
+    depositMoneyToUserWalletController,
 } from "../controllers/user.controller.js";
 import AuthMiddleware from "../middleware/authMiddleware.js";
 
@@ -29,5 +30,6 @@ userRoutes.post("/verify-reset-password-otp", verifyForgotPasswordOTPController)
 userRoutes.post("/set-new-password", setNewPassword)
 userRoutes.get("/my-details", AuthMiddleware, getUserDetailsController);
 userRoutes.get("/get-user-by-email", getUserDetailsByEmailController)
+userRoutes.post("/deposit-money", AuthMiddleware, depositMoneyToUserWalletController)
 
 export default userRoutes;

@@ -642,7 +642,6 @@ export const getUserDetailsController = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Failed to fetch user details",
-            error: error.message,
         });
     }
 };
@@ -677,7 +676,91 @@ export const getUserDetailsByEmailController = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: "Failed to fetch user details",
-            error: error.message,
+        });
+    }
+}
+
+export const depositMoneyToUserWalletController = async (req, res) => {
+    try {
+        const { amount } = req.body;
+
+        if (amount <= 0) {
+            return res.status(400).json({
+                success: false,
+                message: "Amount should be greater than 0."
+            });
+        }
+
+        const userId = req.user?.id;
+        console.log(userId)
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(400).json({
+                success: false,
+                message: "No user found."
+            });
+        }
+
+        user.wallet = (user.wallet || 0) + amount;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Money added to wallet successfully.",
+            wallet: user.wallet
+        });
+
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+}
+
+export const withdrawMoneyFromUserWalletController = async (req, res) => {
+    try {
+        const { amount } = req.body;
+
+        if (amount < 500) {
+            return res.status(400).json({
+                success: false,
+                message: "Withdrawal amount must be at least 500."
+            });
+        }
+
+        const userId = req.user?.id;
+
+        const user = await userModel.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found."
+            });
+        }
+
+        if (user.wallet < amount) {
+            return res.status(400).json({
+                success: false,
+                message: "Insufficient wallet balance."
+            });
+        }
+
+        user.wallet = user.wallet - amount;
+        await user.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Withdrawal successful.",
+            wallet: user.wallet
+        });
+
+    } catch (error) {
+        console.error("Withdrawal Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while processing the withdrawal."
         });
     }
 }
