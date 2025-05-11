@@ -9,6 +9,7 @@ import ForgotPassword from "../pages/ForgotPassword.jsx";
 import VerifyResetPasswordOTP from "../pages/VerifyResetPasswordOTP.jsx";
 import SetNewPassword from "../pages/SetNewPassword.jsx";
 import OauthSuccess from "../components/OauthSuccess.jsx";
+import Profile from "@/pages/Profile.jsx";
 
 const router = createBrowserRouter([
     {
@@ -46,7 +47,14 @@ const router = createBrowserRouter([
                 path: "/set-new-password",
                 element: <SetNewPassword />
             },
-            { path: "oauth-success", element: <OauthSuccess /> }
+            { 
+                path: "oauth-success", 
+                element: <OauthSuccess /> 
+            },
+            {
+                path: "/profile",
+                element: <Profile />
+            }
         ],
     },
 ]);

@@ -2,72 +2,140 @@
 
 import { useState } from "react";
 import {
-    ChevronsLeft,
-    ChevronsRight,
     LayoutDashboard,
     User,
     Settings,
     LogIn,
     UserPlus,
+    Menu,
+    LogOut,
+    Home
 } from "lucide-react";
+import { useUser } from "../contexts/UserContext";
+import { useNavigate } from "react-router-dom";
+import api from "../utils/api";
+import toast from 'react-hot-toast';
 
-export default function Sidebar({ user }) {
-    const [isDesktopOpen, setIsDesktopOpen] = useState(true); // Only for lg+
+export default function Sidebar() {
+    const [isDesktopOpen, setIsDesktopOpen] = useState(true);
+    const [active, setActive] = useState("Dashboard");
+    const { user, setUser } = useUser();
+    const navigate = useNavigate();
+
+    const menuItemClass = (name) =>
+        `flex items-center gap-3 px-4 py-3 rounded cursor-pointer transition-all ${active === name
+            ? "bg-[#2C3946] border-l-4 border-[#00B4FF] text-white"
+            : "text-gray-300 hover:bg-[#1A2A36]"
+        }`;
+
+    const handleLogout = async () => {
+        try {
+            const response = await api.post("/api/user/logout");
+
+            if (response?.data?.success) {
+                toast.success("Logged out successfully");
+                setUser(null); // Reset user state in context
+            }
+        } catch (error) {
+            console.error("Logout failed:", error);
+            toast.error("Logout failed");
+        }
+    };
 
     return (
         <aside
-            className={`hidden lg:flex flex-col bg-white h-full shadow-md transition-all duration-300 
-            ${isDesktopOpen ? "w-64" : "w-16"} relative`}
+            className={`hidden lg:flex flex-col bg-[#0F212E] h-screen transition-all duration-300 shadow-md ${isDesktopOpen ? "w-64" : "w-16"
+                } relative`}
         >
-            <nav className="flex-1 p-4 space-y-4">
-                {/* Dashboard */}
-                <a href="#" className="flex items-center gap-3 text-gray-700 hover:text-black transition-colors">
-                    <LayoutDashboard className="w-5 h-5" />
-                    {isDesktopOpen && <span className="text-sm">Dashboard</span>}
-                </a>
+            {/* Top bar with menu icon */}
+            <div className="px-4 py-2 shadow-xl h-[8vh] text-white flex items-center gap-5">
+                <button onClick={() => setIsDesktopOpen((prev) => !prev)}>
+                    <Menu className="h-7 w-7" />
+                </button>
+            </div>
 
-                {/* Show Profile only if user is logged in */}
+            {/* Navigation links */}
+            <nav className="flex-1 px-2 mt-10 space-y-2">
+                <div
+                    onClick={() => {
+                        setActive("Dashboard");
+                        navigate("/");
+                    }}
+                    className={menuItemClass("Dashboard")}
+                >
+                    <Home className="w-5 h-5 shrink-0" />
+                    {isDesktopOpen && (
+                        <span className="text-sm font-medium">Home</span>
+                    )}
+                </div>
+
                 {user && (
-                    <a href="#" className="flex items-center gap-3 text-gray-700 hover:text-black transition-colors">
-                        <User className="w-5 h-5" />
-                        {isDesktopOpen && <span className="text-sm">Profile</span>}
-                    </a>
+                    <div
+                        onClick={() => {
+                            setActive("Profile");
+                            navigate("/profile");
+                        }}
+                        className={menuItemClass("Profile")}
+                    >
+                        <User className="w-5 h-5 shrink-0" />
+                        {isDesktopOpen && (
+                            <span className="text-sm font-medium">Profile</span>
+                        )}
+                    </div>
                 )}
 
-                {/* Settings */}
-                <a href="#" className="flex items-center gap-3 text-gray-700 hover:text-black transition-colors">
-                    <Settings className="w-5 h-5" />
-                    {isDesktopOpen && <span className="text-sm">Settings</span>}
-                </a>
+                <div
+                    onClick={() => {
+                        setActive("Settings");
+                        navigate("/settings");
+                    }}
+                    className={menuItemClass("Settings")}
+                >
+                    <Settings className="w-5 h-5 shrink-0" />
+                    {isDesktopOpen && (
+                        <span className="text-sm font-medium">Settings</span>
+                    )}
+                </div>
 
-                {/* If user is not logged in: show Login/Register vertically */}
-                {!user && (
-                    <div className="flex flex-col space-y-3 pt-6">
-                        <a
-                            href="/login"
-                            className="flex items-center gap-3 text-blue-600 hover:text-blue-800 transition-colors"
+                {/* Auth Buttons */}
+                {!user ? (
+                    <div className="flex flex-col space-y-3 pt-6 px-2">
+                        <button
+                            onClick={() => navigate("/login")}
+                            className={`${isDesktopOpen
+                                    ? "flex items-center justify-center lg:justify-start gap-3 px-4 py-3 w-full text-white bg-blue-600 hover:bg-blue-700 rounded text-sm transition-all"
+                                    : "flex items-center justify-center px-2 py-3 bg-blue-600 rounded-md text-white"
+                                }`}
                         >
                             <LogIn className="w-5 h-5" />
-                            {isDesktopOpen && <span className="text-sm">Login</span>}
-                        </a>
-                        <a
-                            href="/register"
-                            className="flex items-center gap-3 text-green-600 hover:text-green-800 transition-colors"
+                            {isDesktopOpen && <span className="font-medium">Login</span>}
+                        </button>
+                        <button
+                            onClick={() => navigate("/register")}
+                            className={`${isDesktopOpen
+                                    ? "flex items-center justify-center lg:justify-start gap-3 px-4 py-3 w-full text-white bg-green-600 hover:bg-green-700 rounded text-sm transition-all"
+                                    : "flex items-center justify-center px-2 py-3 bg-green-600 rounded-md text-white"
+                                }`}
                         >
                             <UserPlus className="w-5 h-5" />
-                            {isDesktopOpen && <span className="text-sm">Register</span>}
-                        </a>
+                            {isDesktopOpen && <span className="font-medium">Register</span>}
+                        </button>
+                    </div>
+                ) : (
+                    <div className="px-2 pt-6">
+                        <button
+                            onClick={handleLogout}
+                            className={`${isDesktopOpen
+                                    ? "flex items-center justify-center lg:justify-start gap-3 px-4 py-3 w-full text-white bg-red-600 hover:bg-red-700 rounded text-sm transition-all"
+                                    : "flex items-center justify-center px-2 py-3 bg-red-600 rounded-md text-white"
+                                }`}
+                        >
+                            <LogOut className="w-5 h-5" />
+                            {isDesktopOpen && <span className="font-medium">Logout</span>}
+                        </button>
                     </div>
                 )}
             </nav>
-
-            {/* Toggle button */}
-            <button
-                onClick={() => setIsDesktopOpen(prev => !prev)}
-                className="absolute top-1/2 right-[-12px] transform -translate-y-1/2 bg-white border border-gray-300 rounded-full shadow p-1 z-50"
-            >
-                {isDesktopOpen ? <ChevronsLeft className="h-4 w-4" /> : <ChevronsRight className="h-4 w-4" />}
-            </button>
         </aside>
     );
 }
