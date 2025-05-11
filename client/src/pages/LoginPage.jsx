@@ -3,10 +3,12 @@ import { FcGoogle } from "react-icons/fc";
 import { FaGithub } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import api from "../utils/api.js"
+import api from "../utils/api.js";
+import { useUser } from "../contexts/UserContext";
 
 export default function LoginPage() {
     const navigate = useNavigate();
+    const { setUser } = useUser();
 
     const [userData, setUserData] = useState({
         email: "",
@@ -17,20 +19,22 @@ export default function LoginPage() {
         e.preventDefault();
 
         try {
-            const response = await api.post(
-                `${import.meta.env.VITE_API_URL}/api/user/login`,
-                userData,
-                { withCredentials: true }
-            );
+            const response = await api.post("/api/user/login", userData, {
+                withCredentials: true,
+            });
 
             if (!response?.data?.success) {
-                toast.error(response?.data?.message);
-            } else {
-                toast.success(response?.data?.message);
-                navigate("/");
+                toast.error(response?.data?.message || "Login failed");
+                return;
             }
+
+            toast.success(response.data.message);
+
+            const userRes = await api.get("/api/user/my-details", { withCredentials: true });
+            setUser(userRes.data.data);
+
+            navigate("/");
         } catch (error) {
-            // console.error("Login failed:", error);
             toast.error(error.response?.data?.message || "Something went wrong");
         }
     };
@@ -84,6 +88,7 @@ export default function LoginPage() {
                     >
                         Log In
                     </button>
+
                     <div className="flex justify-between items-center text-sm mb-4">
                         <span></span>
                         <span
@@ -93,6 +98,7 @@ export default function LoginPage() {
                             Forgot password?
                         </span>
                     </div>
+
                     <p className="text-sm text-center text-gray-600">
                         Don't have an account?{" "}
                         <span
@@ -112,7 +118,9 @@ export default function LoginPage() {
 
                 <div className="space-y-3">
                     <button
-                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`}
+                        onClick={() =>
+                            window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/google`
+                        }
                         className="flex items-center justify-center w-full gap-2 border px-4 py-2 rounded-md hover:bg-gray-100 transition"
                     >
                         <FcGoogle className="text-xl" />
@@ -120,7 +128,9 @@ export default function LoginPage() {
                     </button>
 
                     <button
-                        onClick={() => window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`}
+                        onClick={() =>
+                            window.location.href = `${import.meta.env.VITE_API_URL}/api/auth/github`
+                        }
                         className="flex items-center justify-center w-full gap-2 border px-4 py-2 rounded-md hover:bg-gray-100 transition"
                     >
                         <FaGithub className="text-xl" />
