@@ -24,7 +24,7 @@ const Home = () => {
     }, []);
 
     return (
-        <div className="bg-green-500 p-4 min-h-screen">
+        <div className="p-4 min-h-screen">
             <h1 className="text-xl font-semibold mb-4">Home</h1>
             {loading ? (
                 <p>Loading user details...</p>
