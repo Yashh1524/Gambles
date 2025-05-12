@@ -1,4 +1,3 @@
-import payoutModel from "../models/payout.model.js";
 import transactionModel from "../models/transaction.model.js";
 import { razorpayPost } from "../utils/razorpay.js";
 import crypto from "crypto";

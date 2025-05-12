@@ -7,7 +7,6 @@ import userRoutes from "./routes/user.route.js"
 import oauthRoutes from "./routes/auth.route.js"
 import betRoutes from "./routes/bet.route.js"
 import razorpayRoutes from "./routes/razorpay.route.js"
-import payoutRoutes from "./routes/payout.route.js"
 import transactionRoutes from "./routes/transaction.routes.js"
 
 const app = express()

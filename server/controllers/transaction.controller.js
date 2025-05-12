@@ -68,3 +68,54 @@ export const createTransactionController = async (req, res) => {
         });
     }
 };
+
+export const updateTransactionStatusController = async (req, res) => {
+    try {
+        const { transactionId, status } = req.body;
+
+        if (!transactionId || !status || !["SUCCESS", "FAILED"].includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Transaction ID and valid status (SUCCESS or FAILED) are required."
+            });
+        }
+
+        const transaction = await transactionModel.findById(transactionId).populate("user");
+
+        if (!transaction) {
+            return res.status(404).json({ success: false, message: "Transaction not found." });
+        }
+
+        if (transaction.status !== "PENDING") {
+            return res.status(400).json({
+                success: false,
+                message: "Only PENDING transactions can be updated."
+            });
+        }
+
+        const user = transaction.user;
+
+        // Update wallet balance if needed
+        if (status === "SUCCESS" && transaction.type === "DEPOSIT") {
+            user.wallet += transaction.amount;
+            await user.save();
+        }
+
+        transaction.status = status;
+        await transaction.save();
+
+        return res.status(200).json({
+            success: true,
+            message: `Transaction marked as ${status}.`,
+            wallet: user.wallet,
+            transactionId: transaction._id
+        });
+
+    } catch (error) {
+        console.error("Error updating transaction status:", error);
+        return res.status(500).json({
+            success: false,
+            message: "An error occurred while updating the transaction status."
+        });
+    }
+};
