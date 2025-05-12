@@ -7,7 +7,7 @@ import Wallet from './components/Wallet';
 
 function App() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isWalletOpen, setIsWalletOpen] = useState(true)
+  const [isWalletOpen, setIsWalletOpen] = useState(false)
 
   return (
     <div className="flex h-screen overflow-hidden">

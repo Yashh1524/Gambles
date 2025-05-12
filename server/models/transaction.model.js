@@ -28,6 +28,12 @@ const transactionSchema = new mongoose.Schema({
         enum: ["PENDING", "SUCCESS", "FAILED"],
         default: "PENDING"
     },
+    razorpayOrderId: {
+        type: String,
+    },
+    razorpayPaymentId: {
+        type: String,
+    },
     razorpayPayoutId: {
         type: String,
     }
