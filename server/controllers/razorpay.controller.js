@@ -79,7 +79,6 @@ export const verifyDepositPaymentController = async (req, res) => {
     }
 };
 
-
 export const withdrawMoneyThroughRazorpayController = async (req, res) => {
     try {
         const { payoutId } = req.body;

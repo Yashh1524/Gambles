@@ -10,6 +10,8 @@ import VerifyResetPasswordOTP from "../pages/VerifyResetPasswordOTP.jsx";
 import SetNewPassword from "../pages/SetNewPassword.jsx";
 import OauthSuccess from "../components/OauthSuccess.jsx";
 import Profile from "@/pages/Profile.jsx";
+import DepositMoney from "@/pages/DepositMoney.jsx";
+import WithdrawMoney from "@/pages/WithdrawMoney.jsx";
 
 const router = createBrowserRouter([
     {
@@ -54,7 +56,15 @@ const router = createBrowserRouter([
             {
                 path: "/profile",
                 element: <Profile />
-            }
+            },
+            {
+                path: "/deposit-money",
+                element: <DepositMoney />
+            },
+            {
+                path: "/withdraw-money",
+                element: <WithdrawMoney />
+            },
         ],
     },
 ]);

@@ -2,7 +2,7 @@ import { Menu, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 
-function Navbar({ setIsSidebarOpen, setOpenWallet }) {
+function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
     const { user } = useUser();
     const navigate = useNavigate();
 
@@ -22,7 +22,7 @@ function Navbar({ setIsSidebarOpen, setOpenWallet }) {
                             ₹{Number(user.wallet).toFixed(2)}
                         </div>
                         <button
-                            onClick={() => setOpenWallet(true)}
+                            onClick={() => setIsWalletOpen(true)}
                             className="bg-blue-600 hover:bg-blue-700 text-white font-medium text-sm px-4 py-2"
                         >
                             Wallet
