@@ -13,6 +13,7 @@ const WithdrawMoney = () => {
         accountNumber: '',
         ifscCode: '',
         upiId: '',
+        type: "WITHDRAW",
     });
 
     const navigate = useNavigate();
@@ -29,10 +30,10 @@ const WithdrawMoney = () => {
         }
 
         try {
-            const { data } = await api.post("/api/payout/create-payout", form);
-            const { payoutId } = data;
+            const { data } = await api.post("/api/transaction/create-transaction", form);
+            const { transactionId } = data;
 
-            const res = await api.post("/api/razorpay/withdraw-payout-razorpay", { payoutId });
+            const res = await api.post("/api/razorpay/withdraw-payout-razorpay", { transactionId });
 
             toast.success("Withdrawal successful");
             setUser((prev) => ({ ...prev, wallet: res.data.wallet }));

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const payoutSchema = new mongoose.Schema({
+const transactionSchema = new mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -8,6 +8,11 @@ const payoutSchema = new mongoose.Schema({
     },
     amount: {
         type: Number,
+        required: true
+    },
+    type: {
+        type: String,
+        enum: ["DEPOSIT", "WITHDRAW"],
         required: true
     },
     bankDetails: {
@@ -28,4 +33,4 @@ const payoutSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-export default mongoose.model("Payout", payoutSchema);
+export default mongoose.model("Transaction", transactionSchema);

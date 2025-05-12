@@ -1,4 +1,5 @@
 import payoutModel from "../models/payout.model.js";
+import transactionModel from "../models/transaction.model.js";
 import { razorpayPost } from "../utils/razorpay.js";
 import crypto from "crypto";
 import Razorpay from "razorpay";
@@ -81,19 +82,19 @@ export const verifyDepositPaymentController = async (req, res) => {
 
 export const withdrawMoneyThroughRazorpayController = async (req, res) => {
     try {
-        const { payoutId } = req.body;
+        const { transactionId } = req.body;
 
-        const payout = await payoutModel.findById(payoutId).populate('user');
-        if (!payout || payout.status !== 'PENDING') {
-            return res.status(400).json({ success: false, message: "Invalid or already processed payout." });
+        const transaction = await transactionModel.findById(transactionId).populate("user");
+        if (!transaction || transaction.status !== "PENDING") {
+            return res.status(400).json({ success: false, message: "Invalid or already processed transaction." });
         }
 
-        const user = payout.user;
+        const user = transaction.user;
         if (!user) {
             return res.status(404).json({ success: false, message: "User not found." });
         }
 
-        if (user.wallet < payout.amount) {
+        if (user.wallet < transaction.amount) {
             return res.status(400).json({ success: false, message: "Insufficient wallet balance." });
         }
 
@@ -107,22 +108,26 @@ export const withdrawMoneyThroughRazorpayController = async (req, res) => {
 
         // Create Fund Account
         let fundAccount;
-        if (payout.bankDetails?.accountNumber && payout.bankDetails?.ifscCode && payout.bankDetails?.accountHolderName) {
+        if (
+            transaction.bankDetails?.accountNumber &&
+            transaction.bankDetails?.ifscCode &&
+            transaction.bankDetails?.accountHolderName
+        ) {
             fundAccount = await razorpayPost('/fund_accounts', {
                 contact_id: contact.id,
                 account_type: 'bank_account',
                 bank_account: {
-                    name: payout.bankDetails.accountHolderName,
-                    ifsc: payout.bankDetails.ifscCode,
-                    account_number: payout.bankDetails.accountNumber,
+                    name: transaction.bankDetails.accountHolderName,
+                    ifsc: transaction.bankDetails.ifscCode,
+                    account_number: transaction.bankDetails.accountNumber,
                 }
             });
-        } else if (payout.upiId) {
+        } else if (transaction.upiId) {
             fundAccount = await razorpayPost('/fund_accounts', {
                 contact_id: contact.id,
                 account_type: 'vpa',
                 vpa: {
-                    address: payout.upiId,
+                    address: transaction.upiId,
                 }
             });
         } else {
@@ -131,36 +136,37 @@ export const withdrawMoneyThroughRazorpayController = async (req, res) => {
 
         // Create Razorpay Payout
         const razorpayPayout = await razorpayPost('/payouts', {
-            account_number: '2323230016719731', // your RazorpayX account number
+            account_number: '2323230016719731', // Your RazorpayX account number
             fund_account_id: fundAccount.id,
-            amount: payout.amount * 100, // Razorpay expects paisa
+            amount: transaction.amount * 100, // in paisa
             currency: 'INR',
             mode: 'IMPS',
             purpose: 'payout',
             queue_if_low_balance: true,
         });
 
-        // Update Payout
-        payout.status = 'SUCCESS';
-        payout.razorpayPayoutId = razorpayPayout.id;
-        await payout.save();
+        // Update transaction
+        transaction.status = "SUCCESS";
+        transaction.razorpayPayoutId = razorpayPayout.id;
+        await transaction.save();
 
-        // Deduct user's wallet balance
-        user.wallet -= payout.amount;
+        // Deduct wallet
+        user.wallet -= transaction.amount;
         await user.save();
 
         return res.status(200).json({
             success: true,
             message: "Withdrawal processed successfully.",
-            payoutId: razorpayPayout.id,
-            wallet: user.wallet
+            razorpayPayoutId: razorpayPayout.id,
+            wallet: user.wallet,
         });
 
     } catch (error) {
-        console.error("Withdraw Money Razorpay Error:", error.message || error);
+        console.error("Withdraw Razorpay Error:", error);
         return res.status(500).json({
             success: false,
             message: error.message || "Server error while processing withdrawal."
         });
     }
 };
+
