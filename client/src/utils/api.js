@@ -1,4 +1,3 @@
-// utils/api.js
 import axios from "axios";
 
 const api = axios.create({
@@ -11,19 +10,18 @@ api.interceptors.response.use(
     async (error) => {
         const originalRequest = error.config;
 
-        // Match your backend's actual error message for expired token
-        const isAccessTokenExpired =
+        // Retry once on 401 Unauthorized
+        if (
             error.response?.status === 401 &&
-            error.response?.data?.message === "Access token expired";
-
-        if (isAccessTokenExpired && !originalRequest._retry) {
+            !originalRequest._retry
+        ) {
             originalRequest._retry = true;
-
             try {
                 await api.post("/api/user/refresh-token");
                 return api(originalRequest); // Retry original request
-            } catch (refreshError) {
-                console.error("Token refresh failed:", refreshError);
+            } catch (err) {
+                console.error("Token refresh failed:", err);
+                // Optional: redirect to login
             }
         }
 
