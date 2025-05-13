@@ -2,14 +2,13 @@
 
 import { useState } from "react";
 import {
-    LayoutDashboard,
     User,
-    Settings,
     LogIn,
     UserPlus,
     Menu,
     LogOut,
-    Home
+    Home,
+    Gamepad
 } from "lucide-react";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -86,14 +85,14 @@ export default function Sidebar() {
 
                 <div
                     onClick={() => {
-                        setActive("Settings");
-                        navigate("/settings");
+                        setActive("Games");
+                        navigate("/games");
                     }}
-                    className={menuItemClass("Settings")}
+                    className={menuItemClass("Games")}
                 >
-                    <Settings className="w-5 h-5 shrink-0" />
+                    <Gamepad className="w-5 h-5 shrink-0" />
                     {isDesktopOpen && (
-                        <span className="text-sm font-medium">Settings</span>
+                        <span className="text-sm font-medium">Games</span>
                     )}
                 </div>
 

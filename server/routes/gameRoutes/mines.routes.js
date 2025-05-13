@@ -1,5 +1,6 @@
 // routes/gameRoutes/mines.routes.js
 import { 
+    endMinesGame,
     startMinesGame 
 } from "../../controllers/gamesControllers/mines.controller.js";
 import { Router } from "express";
@@ -9,5 +10,6 @@ const mineRoutes = Router();
 
 // POST /api/games/mines/start
 mineRoutes.post("/start-mine", AuthMiddleware, startMinesGame);
+mineRoutes.post("/end-mine", AuthMiddleware, endMinesGame);
 
 export default mineRoutes;

@@ -1,3 +1,4 @@
+// controllers/minesGame.controller.js
 import userModel from "../../models/user.model.js";
 import betModel from "../../models/bet.model.js";
 import gameModel from "../../models/game.model.js";
@@ -11,23 +12,19 @@ export const startMinesGame = async (req, res) => {
     }
 
     try {
-
-        // Get user from DB
-        const user = await userModel.findById(userId)
+        const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
         if (user.wallet < amount) {
             return res.status(400).json({ message: "Insufficient wallet balance" });
         }
 
-        // Deduct amount from wallet
         user.wallet -= amount;
         await user.save();
 
         const game = await gameModel.findOne({ name: "mines" });
         if (!game) return res.status(404).json({ message: "Game not found" });
 
-        // Generate random mine positions (5x5 = 25 tiles)
         const allTiles = Array.from({ length: 25 }, (_, i) => i);
         const shuffled = allTiles.sort(() => 0.5 - Math.random());
         const minePositions = shuffled.slice(0, minesCount);
@@ -47,9 +44,65 @@ export const startMinesGame = async (req, res) => {
         res.status(201).json({
             message: "Mines game started",
             bet: newBet,
+            wallet: user.wallet, // return updated wallet
         });
     } catch (err) {
         console.error("Mines game error:", err);
         res.status(500).json({ message: "Failed to start game" });
+    }
+};
+
+export const endMinesGame = async (req, res) => {
+    const { betId, status, revealedTiles } = req.body;
+    const userId = req.user.id;
+
+    if (!betId || !["win", "lose"].includes(status)) {
+        return res.status(400).json({ message: "Invalid game result" });
+    }
+
+    try {
+        const bet = await betModel.findById(betId);
+        if (!bet || bet.user.toString() !== userId) {
+            return res.status(404).json({ message: "Bet not found" });
+        }
+
+        if (bet.status !== "pending") {
+            return res.status(400).json({ message: "Game already finished" });
+        }
+
+        bet.status = "completed";
+        bet.gameData.revealedTiles = revealedTiles;
+
+        let winAmount = 0;
+
+        const user = await userModel.findById(userId);
+        if (status === "win") {
+            const mineCount = bet.gameData.mineCount;
+            const safeTiles = 25 - mineCount;
+            const base = 1.1;
+            const multiplier = 1 + (revealedTiles.length / safeTiles) * base;
+            winAmount = Number((bet.betAmount * multiplier).toFixed(2));
+
+            user.wallet += winAmount;
+            await user.save();
+
+            bet.isWin = true;
+            bet.winAmount = winAmount;
+        } else {
+            bet.isWin = false;
+            bet.winAmount = 0;
+        }
+
+        await bet.save();
+
+        res.status(200).json({
+            message: "Game finished",
+            result: status,
+            winAmount,
+            wallet: user.wallet, // return updated wallet
+        });
+    } catch (err) {
+        console.error("Finish mines game error:", err);
+        res.status(500).json({ message: "Error finishing game" });
     }
 };
