@@ -22,22 +22,22 @@ const router = createBrowserRouter([
         children: [
             { path: "", element: <Home /> },
             { path: "verify-user", element: <VerifyEmail /> },
-            {
-                path: "register",
-                element: (
-                    <ProtectedRedirect>
-                        <RegisterPage />
-                    </ProtectedRedirect>
-                ),
-            },
-            {
-                path: "login",
-                element: (
-                    <ProtectedRedirect>
-                        <LoginPage />
-                    </ProtectedRedirect>
-                ),
-            },
+            // {
+            //     path: "register",
+            //     element: (
+            //         <ProtectedRedirect>
+            //             <RegisterPage />
+            //         </ProtectedRedirect>
+            //     ),
+            // },
+            // {
+            //     path: "login",
+            //     element: (
+            //         <ProtectedRedirect>
+            //             <LoginPage />
+            //         </ProtectedRedirect>
+            //     ),
+            // },
             { path: "forgot-password", element: <ForgotPassword /> },
             { path: "verify-forgot-password-otp", element: <VerifyResetPasswordOTP /> },
             { path: "set-new-password", element: <SetNewPassword /> },
@@ -48,6 +48,22 @@ const router = createBrowserRouter([
             { path: "games", element: <Games /> },
             { path: "games/mines", element: <MinesGame /> },
         ],
+    },
+    {
+        path: "register",
+        element: (
+            <ProtectedRedirect>
+                <RegisterPage />
+            </ProtectedRedirect>
+        ),
+    },
+    {
+        path: "login",
+        element: (
+            <ProtectedRedirect>
+                <LoginPage />
+            </ProtectedRedirect>
+        ),
     },
 ]);
 
