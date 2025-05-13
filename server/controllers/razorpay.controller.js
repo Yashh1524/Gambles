@@ -15,7 +15,7 @@ export const createDepositOrderController = async (req, res) => {
         const { amount } = req.body;
         const userId = req.user?.id;
 
-        console.log("User in request:", req.user);
+        // console.log("User in request:", req.user);
 
         if (!amount || amount <= 0) {
             return res.status(400).json({ success: false, message: "Invalid amount." });

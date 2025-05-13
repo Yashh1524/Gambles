@@ -50,7 +50,7 @@ export const registerController = async (req, res) => {
         // console.log("About to save user:", newUser);
 
         const savedUser = await newUser.save();
-        console.log("Saved user:", savedUser);
+        // console.log("Saved user:", savedUser);
 
         // Send the verification link with the token
         const verifyLink = `${process.env.CLIENT_URL}/verify-user?token=${verificationToken}`;
@@ -692,7 +692,7 @@ export const depositMoneyToUserWalletController = async (req, res) => {
         }
 
         const userId = req.user?.id;
-        console.log(userId)
+        // console.log(userId)
         const user = await userModel.findById(userId);
         if (!user) {
             return res.status(400).json({

@@ -104,8 +104,8 @@ export const githubOAuthController = (req, res) => {
 };
 
 export const githubOAuthCallbackController = async (req, res) => {
-    console.log("GitHub callback hit ✅");
-    console.log("Query code:", req.query.code);
+    // console.log("GitHub callback hit");
+    // console.log("Query code:", req.query.code);
 
     const code = req.query.code;
     if (!code) {

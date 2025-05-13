@@ -44,7 +44,7 @@ export default function Sidebar() {
 
     return (
         <aside
-            className={`hidden lg:flex flex-col bg-[#0F212E] h-screen transition-all duration-300 shadow-md ${isDesktopOpen ? "w-64" : "w-16"
+            className={`hidden lg:flex flex-col bg-[#0F212E] h-screen transition-all duration-300 shadow-md ${isDesktopOpen ? "w-60" : "w-16"
                 } relative`}
         >
             {/* Top bar with menu icon */}

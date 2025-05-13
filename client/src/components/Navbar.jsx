@@ -7,7 +7,7 @@ function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
     const navigate = useNavigate();
 
     return (
-        <div className="flex items-center justify-between bg-[#1A2C38] p-4 shadow-xl text-white">
+        <div className="flex h-[8vh] items-center justify-between bg-[#1A2C38] p-4 shadow-xl text-white">
             <button className="lg:hidden" onClick={() => setIsSidebarOpen(prev => !prev)}>
                 <Menu className="h-6 w-6" />
             </button>
