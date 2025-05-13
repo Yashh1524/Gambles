@@ -1,5 +1,5 @@
 import { Menu, User } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useUser } from '../contexts/UserContext';
 
 function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
@@ -16,7 +16,9 @@ function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
                 >
                     <Menu className="h-6 w-6" />
                 </button>
-                <h1 className="text-lg sm:text-xl font-semibold whitespace-nowrap">My App</h1>
+                <Link to={"/"}>
+                    <h1 className="text-lg sm:text-xl font-semibold whitespace-nowrap">GamBles</h1>
+                </Link>
             </div>
 
             {/* Center: Auth Buttons (on mobile) */}
