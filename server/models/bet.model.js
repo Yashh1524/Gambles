@@ -6,9 +6,9 @@ const betSchema = new mongoose.Schema({
         ref: "User",
         required: true
     },
-    gameType: {
-        type: String,
-        enum: ["mines", "dice", "roulette", "plinko"], // add more as you expand
+    game: { // Changed gameType to game that references the Game model
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Game", // Referring to the Game model
         required: true
     },
     betAmount: {
@@ -24,7 +24,7 @@ const betSchema = new mongoose.Schema({
         default: false
     },
     gameData: {
-        type: mongoose.Schema.Types.Mixed, // this will store JSON data specific to the game (e.g., for Mines:mined positions)
+        type: mongoose.Schema.Types.Mixed, // to store game-specific data
         default: {}
     },
     status: {

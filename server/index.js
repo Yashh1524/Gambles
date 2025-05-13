@@ -8,6 +8,7 @@ import oauthRoutes from "./routes/auth.route.js"
 import betRoutes from "./routes/bet.route.js"
 import razorpayRoutes from "./routes/razorpay.route.js"
 import transactionRoutes from "./routes/transaction.routes.js"
+import gamesRoutes from "./routes/gameRoutes/games.routes.js"
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -26,6 +27,7 @@ app.use("/api/auth", oauthRoutes);
 app.use("/api/bet", betRoutes);
 app.use("/api/transaction", transactionRoutes)
 app.use("/api/razorpay", razorpayRoutes)
+app.use("/api/games", gamesRoutes)
 
 app.listen(port, () => {
     console.log(`Server is running on PORT:${port}`);
