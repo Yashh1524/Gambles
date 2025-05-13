@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { useUser } from "@/contexts/UserContext";
@@ -13,8 +13,28 @@ const MinesGame = () => {
     const [currentProfit, setCurrentProfit] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [betId, setBetId] = useState(null);
+    const [explodedBombIndex, setExplodedBombIndex] = useState(null);
 
     const { user, setUser } = useUser();
+
+    const diamondSoundRef = useRef(null);
+    const bombSoundRef = useRef(null);
+
+    const playDiamondSound = () => {
+        if (diamondSoundRef.current) {
+            diamondSoundRef.current.volume = 0.1;
+            diamondSoundRef.current.currentTime = 0;
+            diamondSoundRef.current.play();
+        }
+    };
+
+    const playBombSound = () => {
+        if (bombSoundRef.current) {
+            bombSoundRef.current.volume = 0.2;
+            bombSoundRef.current.currentTime = 0;
+            bombSoundRef.current.play();
+        }
+    };
 
     const startGame = async () => {
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
@@ -33,8 +53,8 @@ const MinesGame = () => {
             setIsGameStarted(true);
             setCurrentProfit(0);
             setMultiplier(1);
+            setExplodedBombIndex(null);
 
-            // Update wallet from server response
             setUser(prev => ({ ...prev, wallet: data.wallet }));
 
             toast.success("Game started");
@@ -59,11 +79,13 @@ const MinesGame = () => {
         if (!isGameStarted || revealedTiles.includes(index)) return;
 
         if (minePositions.includes(index)) {
+            setExplodedBombIndex(index);
             setGrid(prev => {
                 const newGrid = [...prev];
                 newGrid[index] = "💣";
                 return newGrid;
             });
+            playBombSound();
             toast.error("You hit a mine!");
             endGame(false);
         } else {
@@ -73,13 +95,15 @@ const MinesGame = () => {
                 return newGrid;
             });
 
+            playDiamondSound();
+
             const newRevealed = [...revealedTiles, index];
             setRevealedTiles(newRevealed);
 
             const newMultiplier = getMultiplier(newRevealed.length, minesCount);
             const profit = (amount * newMultiplier).toFixed(2);
             setMultiplier(newMultiplier);
-            setCurrentProfit(profit);
+            setCurrentProfit(parseFloat(profit));
         }
     };
 
@@ -119,20 +143,26 @@ const MinesGame = () => {
             toast.error("Failed to end game");
         }
 
+        setGrid(prev => {
+            return prev.map((val, idx) => {
+                if (minePositions.includes(idx)) return "💣";
+                if (revealedTiles.includes(idx)) return "💎";
+                return val;
+            });
+        });
+
         setIsGameStarted(false);
         setMultiplier(1);
         setCurrentProfit(0);
-        setRevealedTiles([]);
-        setMinePositions([]);
         setBetId(null);
     };
 
     return (
-        <div className="h-full bg-[#0f1b24] text-white flex justify-center items-center">
-            <div className="flex flex-col lg:flex-row gap-10 w-full max-w-6xl">
+        <div className="min-h-full bg-[#0f1b24] text-white flex items-center px-4 py-6">
+            <div className="flex flex-col lg:flex-row gap-5 w-full max-w-7xl mx-auto">
 
                 {/* Left Panel */}
-                <div className="bg-[#132631] rounded-2xl p-6 w-full max-w-sm shadow-md">
+                <div className="bg-[#132631] rounded-2xl p-6 w-full max-w-sm mx-auto shadow-md">
                     <h2 className="text-2xl font-semibold mb-4 text-center">💣 Mines Game</h2>
 
                     <div className="mb-4">
@@ -196,28 +226,43 @@ const MinesGame = () => {
                 </div>
 
                 {/* Game Grid */}
-                <div className="grid grid-cols-5 gap-3 mx-auto sm:mx-0">
-                    {grid.map((value, idx) => (
-                        <div
-                            key={idx}
-                            onClick={() => handleTileClick(idx)}
-                            className={`w-14 h-14 sm:w-20 sm:h-20 md:w-30 md:h-30 rounded-lg flex items-center justify-center text-2xl font-bold cursor-pointer bg-[#2c3e4c] hover:bg-[#3b5365] shadow-sm transition-all duration-200
-                            ${value === "💣" && "bg-red-600 text-white"}
-                            ${value === "💎" && "bg-green-500 text-black"}`}
-                        >
-                            {value === "💣" && (
-                                <img src="/assets/bomb.svg" alt="Bomb" className="w-8 h-8 sm:w-15 sm:h-15" />
-                            )}
-                            {value === "💎" && (
-                                <img src="/assets/diamond.svg" alt="Diamond" className="w-8 h-8 sm:w-10 sm:h-10" />
-                            )}
-                        </div>
-                    ))}
+                <div className="grid grid-cols-5 gap-2 md:gap-3 justify-center mx-auto">
+                    {grid.map((value, idx) => {
+                        const isMine = minePositions.includes(idx);
+                        const isRevealed = revealedTiles.includes(idx);
+                        const wasGameOver = !isGameStarted && value !== null;
+                        const isExploded = idx === explodedBombIndex;
+
+                        return (
+                            <div
+                                key={idx}
+                                onClick={() => handleTileClick(idx)}
+                                className={`w-13 h-13 sm:w-18 sm:h-18 lg:w-25 lg:h-25 rounded-lg flex items-center justify-center text-2xl font-bold cursor-pointer bg-[#2c3e4c] hover:bg-[#3b5365] shadow-sm transition-transform duration-200 ease-out
+                                    ${wasGameOver ? "scale-100" : ""}
+                                    ${value === "💣" && "bg-red-600"}
+                                    ${value === "💎" && "bg-green-500"}
+                                    ${isRevealed && "ring-4 ring-green-300"}
+                                    ${!isRevealed && isMine && !isGameStarted && !isExploded ? "opacity-40" : ""}
+                                    ${isExploded ? "ring-4 ring-red-500 scale-110" : ""}
+                                `}
+                            >
+                                {value === "💣" && (
+                                    <img src="/assets/bomb.svg" alt="Bomb" className="w-8 h-8 sm:w-10 sm:h-10" />
+                                )}
+                                {value === "💎" && (
+                                    <img src="/assets/diamond.svg" alt="Diamond" className="w-8 h-8 sm:w-10 sm:h-10" />
+                                )}
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
+
+            {/* Sound elements */}
+            <audio ref={diamondSoundRef} src="/sounds/diamond.mp3" preload="auto" />
+            <audio ref={bombSoundRef} src="/sounds/bomb.mp3" preload="auto" />
         </div>
     );
-
 };
 
 export default MinesGame;
