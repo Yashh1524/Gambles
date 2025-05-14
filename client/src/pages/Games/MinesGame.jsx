@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { useUser } from "@/contexts/UserContext";
+import { ImSpinner2 } from "react-icons/im";
 
 const MinesGame = () => {
     const [amount, setAmount] = useState(0);
@@ -14,6 +15,7 @@ const MinesGame = () => {
     const [multiplier, setMultiplier] = useState(1);
     const [betId, setBetId] = useState(null);
     const [explodedBombIndex, setExplodedBombIndex] = useState(null);
+    const [loading, setLoading] = useState(false)
 
     const { user, setUser } = useUser();
 
@@ -79,6 +81,7 @@ const MinesGame = () => {
     }, [user]);
 
     const startGame = async () => {
+        setLoading(true)
         if (!user?.isVerified) return toast.error("Please verify account first.");
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
 
@@ -103,6 +106,8 @@ const MinesGame = () => {
         } catch (err) {
             console.error(err);
             toast.error(err?.response?.data?.message || "Failed to start game");
+        } finally {
+            setLoading(false)
         }
     };
 
@@ -270,12 +275,22 @@ const MinesGame = () => {
                     </div>
 
                     {!isGameStarted ? (
-                        <button
-                            onClick={startGame}
-                            className="w-full py-2 mt-2 rounded bg-green-500 hover:bg-green-600 text-black font-bold shadow"
-                        >
-                            Bet
-                        </button>
+                        loading ? (
+                            <button
+                                disabled
+                                className="w-full py-2 mt-2 rounded bg-green-500 text-black font-bold shadow flex items-center justify-center gap-2"
+                            >
+                                <ImSpinner2 className="animate-spin" />
+                                Starting...
+                            </button>
+                        ) : (
+                            <button
+                                onClick={startGame}
+                                className="w-full py-2 mt-2 rounded bg-green-500 hover:bg-green-600 text-black font-bold shadow"
+                            >
+                                Bet
+                            </button>
+                        )
                     ) : (
                         <>
                             <div className="text-sm mb-2">Revealed Tiles: {revealedTiles.length}</div>
