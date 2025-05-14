@@ -226,7 +226,7 @@ const MinesGame = () => {
 
     return (
         <div className="min-h-full bg-[#0f1b24] text-white flex items-center px-4 py-6">
-            <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto">
+            <div className="flex flex-col lg:flex-row w-full gap-10 max-w-7xl mx-auto">
                 {/* Left Panel */}
                 <div className="bg-[#132631] rounded-2xl p-6 w-full max-w-sm mx-auto shadow-md">
                     <h2 className="text-2xl font-semibold mb-4 text-center">💣 Mines Game</h2>
@@ -317,7 +317,7 @@ const MinesGame = () => {
                                     ${wasGameOver ? "scale-100" : ""}
                                     ${value === "💣" && "bg-red-600 hover:bg-red-500"}
                                     ${value === "💎" && "bg-green-500 hover:bg-green-600"}
-                                    ${isRevealed && "ring-4 ring-green-300"}
+                                    ${isRevealed && "ring-4 ring-green-600"}
                                     ${!isRevealed && isMine && !isGameStarted && !isExploded ? "opacity-40" : ""}
                                     ${isExploded ? "ring-4 ring-red-500 scale-110" : ""}
                                 `}
