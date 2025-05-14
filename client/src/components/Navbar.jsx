@@ -39,9 +39,9 @@ function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
                 </div>
             )}
 
-            {/* Right: Wallet + Profile (if logged in) */}
+            {/*Wallet + Profile (if logged in) */}
             {user && (
-                <div className="flex items-center gap-3">
+                <>
                     {/* Wallet Box */}
                     <div className="flex items-center rounded-md overflow-hidden shadow-sm text-sm">
                         <div className="bg-[#071824] px-3 py-1 font-semibold text-white">
@@ -62,7 +62,7 @@ function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
                     >
                         <User className="w-6 h-6 text-white" />
                     </button>
-                </div>
+                </>
             )}
         </nav>
     );

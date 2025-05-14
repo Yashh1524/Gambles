@@ -21,7 +21,6 @@ const router = createBrowserRouter([
         element: <App />,
         children: [
             { path: "", element: <Home /> },
-            { path: "verify-user", element: <VerifyEmail /> },
             // {
             //     path: "register",
             //     element: (
@@ -49,6 +48,7 @@ const router = createBrowserRouter([
             { path: "games/mines", element: <MinesGame /> },
         ],
     },
+    { path: "verify-user", element: <VerifyEmail /> },
     {
         path: "register",
         element: (

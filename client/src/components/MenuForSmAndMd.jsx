@@ -98,7 +98,18 @@ function MenuForSmAndMd({ isOpen, setIsOpen }) {
                         </button>
                     </div>
                 ) : (
-                    <div className="mt-6">
+                    <div className="mt-6 space-y-2">
+                        {
+                            !user.isVerified && (
+                                <button
+                                    onClick={() => navigate("/verify-user")}
+                                    className="bg-[#1447E6] w-full flex items-center justify-start px-4 py-2 rounded text-white cursor-pointer gap-2"
+                                >
+                                    <FaUserClock size={20} />
+                                    {isDesktopOpen && <span className="font-medium">Verify Account</span>}
+                                </button>
+                            )
+                        }
                         <button
                             onClick={handleLogout}
                             className="flex items-center justify-center gap-2 w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded"

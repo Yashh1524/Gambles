@@ -15,6 +15,7 @@ export const startMinesGame = async (req, res) => {
         const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
 
+        // console.log("Wallet:", user.wallet, "Amount:", amount)
         if (user.wallet < amount) {
             return res.status(400).json({ message: "Insufficient wallet balance" });
         }
@@ -104,5 +105,59 @@ export const endMinesGame = async (req, res) => {
     } catch (err) {
         console.error("Finish mines game error:", err);
         res.status(500).json({ message: "Error finishing game" });
+    }
+};
+
+export const getPendingGame = async (req, res) => {
+    const userId = req.user.id;
+
+    try {
+        const game = await gameModel.findOne({ name: "mines" });
+        if (!game) return res.status(404).json({ message: "Game not found" });
+
+        const pendingGame = await betModel.findOne({
+            user: userId,
+            game: game._id,
+            status: "pending",
+        });
+
+        if (!pendingGame) {
+            return res.status(200).json({ message: "No pending game", bet: null });
+        }
+
+        res.status(200).json({ message: "Pending game found", bet: pendingGame });
+    } catch (err) {
+        console.error("Get pending mines game error:", err);
+        res.status(500).json({ message: "Error fetching pending game" });
+    }
+};
+
+// controllers/minesGame.controller.js
+
+export const revealTile = async (req, res) => {
+    const { betId, tileIndex } = req.body;
+    const userId = req.user.id;
+    // console.log("betId:", betId, "tileIndex:", tileIndex, "userId:", userId);
+    try {
+        const bet = await betModel.findById(betId);
+        // console.log(bet)
+        if (!bet || bet.user.toString() !== userId) {
+            return res.status(404).json({ message: "Bet not found" });
+        }
+
+        if (bet.status !== "pending") {
+            return res.status(400).json({ message: "Game already ended" });
+        }
+
+        if (!bet.gameData.revealedTiles.includes(tileIndex)) {
+            bet.gameData.revealedTiles.push(tileIndex);
+            bet.markModified('gameData'); // Mark gameData as modified
+            await bet.save();
+        }
+
+        res.status(200).json({ message: "Tile revealed", revealedTiles: bet.gameData.revealedTiles });
+    } catch (err) {
+        console.error("Reveal tile error:", err);
+        res.status(500).json({ message: "Failed to update revealed tile" });
     }
 };

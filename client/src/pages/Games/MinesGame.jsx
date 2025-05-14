@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { useUser } from "@/contexts/UserContext";
@@ -36,7 +36,50 @@ const MinesGame = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchPendingGame = async () => {
+            if (!user || !user.isVerified) return;
+
+            try {
+                const { data } = await api.get("/api/games/mines/pending-mine");
+                const pendingBet = data.bet;
+                console.log(data)
+                if (pendingBet) {
+                    const mines = pendingBet.gameData.minePositions;
+                    const revealed = pendingBet.gameData.revealedTiles;
+                    const amt = pendingBet.betAmount;
+
+                    const newMultiplier = getMultiplier(revealed.length, pendingBet.gameData.mineCount);
+                    const profit = (amt * newMultiplier).toFixed(2);
+
+                    setMinePositions(mines);
+                    setGrid(prev => {
+                        const newGrid = [...prev];
+                        revealed.forEach(idx => {
+                            newGrid[idx] = "💎";
+                        });
+                        return newGrid;
+                    });
+                    setRevealedTiles(revealed);
+                    setIsGameStarted(true);
+                    setBetId(pendingBet._id);
+                    setAmount(amt);
+                    setMinesCount(pendingBet.gameData.mineCount);
+                    setMultiplier(newMultiplier);
+                    setCurrentProfit(parseFloat(profit));
+
+                    // toast.success("Resumed pending game");
+                }
+            } catch (err) {
+                console.error("Error checking pending game:", err);
+            }
+        };
+
+        fetchPendingGame();
+    }, [user]);
+
     const startGame = async () => {
+        if (!user?.isVerified) return toast.error("Please verify account first.");
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
 
         try {
@@ -56,7 +99,6 @@ const MinesGame = () => {
             setExplodedBombIndex(null);
 
             setUser(prev => ({ ...prev, wallet: data.wallet }));
-
             toast.success("Game started");
         } catch (err) {
             console.error(err);
@@ -75,28 +117,25 @@ const MinesGame = () => {
         handleTileClick(randomIndex);
     };
 
-    const handleTileClick = (index) => {
+    const handleTileClick = async (index) => {
         if (!isGameStarted || revealedTiles.includes(index)) return;
 
-        if (minePositions.includes(index)) {
+        const isMine = minePositions.includes(index);
+
+        // Reveal locally for instant feedback
+        setGrid(prev => {
+            const newGrid = [...prev];
+            newGrid[index] = isMine ? "💣" : "💎";
+            return newGrid;
+        });
+
+        if (isMine) {
             setExplodedBombIndex(index);
-            setGrid(prev => {
-                const newGrid = [...prev];
-                newGrid[index] = "💣";
-                return newGrid;
-            });
             playBombSound();
             toast.error("You hit a mine!");
-            endGame(false);
+            await endGame(false);
         } else {
-            setGrid(prev => {
-                const newGrid = [...prev];
-                newGrid[index] = "💎";
-                return newGrid;
-            });
-
             playDiamondSound();
-
             const newRevealed = [...revealedTiles, index];
             setRevealedTiles(newRevealed);
 
@@ -104,6 +143,17 @@ const MinesGame = () => {
             const profit = (amount * newMultiplier).toFixed(2);
             setMultiplier(newMultiplier);
             setCurrentProfit(parseFloat(profit));
+
+            // Send revealed tile to backend
+            try {
+                await api.patch("/api/games/mines/reveal-tile", {
+                    betId,
+                    tileIndex: index,
+                });
+            } catch (err) {
+                console.error("Failed to sync tile reveal:", err);
+                toast.error("Failed to update server with revealed tile");
+            }
         }
     };
 
@@ -133,11 +183,6 @@ const MinesGame = () => {
                 setUser(prev => ({ ...prev, wallet: data.wallet }));
             }
 
-            if (won) {
-                toast.success(`Game won! You earned ₹${data.winAmount}`);
-            } else {
-                toast.error("You lost the game!");
-            }
         } catch (err) {
             console.error("End game error:", err);
             toast.error("Failed to end game");
@@ -159,22 +204,31 @@ const MinesGame = () => {
 
     return (
         <div className="min-h-full bg-[#0f1b24] text-white flex items-center px-4 py-6">
-            <div className="flex flex-col lg:flex-row gap-5 w-full max-w-7xl mx-auto">
-
+            <div className="flex flex-col lg:flex-row w-full max-w-7xl mx-auto">
                 {/* Left Panel */}
                 <div className="bg-[#132631] rounded-2xl p-6 w-full max-w-sm mx-auto shadow-md">
                     <h2 className="text-2xl font-semibold mb-4 text-center">💣 Mines Game</h2>
 
                     <div className="mb-4">
-                        <label className="block mb-1 text-sm text-gray-300">Bet Amount (₹)</label>
-                        <input
-                            type="number"
-                            className="w-full p-2 rounded bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
-                            value={amount}
-                            onChange={(e) => setAmount(Number(e.target.value))}
-                            placeholder="Enter amount"
-                            disabled={isGameStarted}
-                        />
+                        <label className="block mb-2 text-sm text-gray-300">Bet Amount (₹)</label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="number"
+                                className="flex-1 p-2.5 rounded-md bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
+                                value={amount}
+                                onChange={(e) => setAmount(Number(e.target.value))}
+                                placeholder="Enter amount"
+                                disabled={isGameStarted}
+                            />
+                            <button
+                                type="button"
+                                disabled={isGameStarted}
+                                onClick={() => setAmount(user.wallet)}
+                                className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-4 py-2 rounded-md transition-all disabled:opacity-50"
+                            >
+                                Max
+                            </button>
+                        </div>
                     </div>
 
                     <div className="mb-4">

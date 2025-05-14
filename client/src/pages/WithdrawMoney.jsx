@@ -102,60 +102,61 @@ const WithdrawMoney = () => {
                                 className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
                             />
                         </div>
-
-                        <div>
-                            <label className="block text-sm font-medium mb-1 text-gray-300">UPI ID (optional)</label>
-                            <input
-                                type="text"
-                                name="upiId"
-                                value={form.upiId}
-                                onChange={handleChange}
-                                placeholder="example@upi"
-                                disabled={isLoading}
-                                className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
-                            />
-                        </div>
-
-                        <div className="text-center text-sm text-gray-400 my-2">OR</div>
-
-                        <div className="space-y-4">
+                        <div className='bg-[#1A2C38] p-4 rounded-xl'>
                             <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-300">Account Holder Name</label>
+                                <label className="block text-sm font-medium mb-1 text-gray-300">UPI ID (optional)</label>
                                 <input
                                     type="text"
-                                    name="accountHolderName"
-                                    value={form.accountHolderName}
+                                    name="upiId"
+                                    value={form.upiId}
                                     onChange={handleChange}
-                                    placeholder="John Doe"
+                                    placeholder="example@upi"
                                     disabled={isLoading}
                                     className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
                                 />
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-300">Account Number</label>
-                                <input
-                                    type="text"
-                                    name="accountNumber"
-                                    value={form.accountNumber}
-                                    onChange={handleChange}
-                                    placeholder="1234567890"
-                                    disabled={isLoading}
-                                    className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
-                                />
-                            </div>
+                            <div className="text-center text-sm text-gray-400 my-2">OR</div>
 
-                            <div>
-                                <label className="block text-sm font-medium mb-1 text-gray-300">IFSC Code</label>
-                                <input
-                                    type="text"
-                                    name="ifscCode"
-                                    value={form.ifscCode}
-                                    onChange={handleChange}
-                                    placeholder="SBIN0000123"
-                                    disabled={isLoading}
-                                    className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
-                                />
+                            <div className="space-y-4">
+                                <div>
+                                    <label className="block text-sm font-medium mb-1 text-gray-300">Account Holder Name</label>
+                                    <input
+                                        type="text"
+                                        name="accountHolderName"
+                                        value={form.accountHolderName}
+                                        onChange={handleChange}
+                                        placeholder="John Doe"
+                                        disabled={isLoading}
+                                        className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-1 text-gray-300">Account Number</label>
+                                    <input
+                                        type="text"
+                                        name="accountNumber"
+                                        value={form.accountNumber}
+                                        onChange={handleChange}
+                                        placeholder="1234567890"
+                                        disabled={isLoading}
+                                        className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="block text-sm font-medium mb-1 text-gray-300">IFSC Code</label>
+                                    <input
+                                        type="text"
+                                        name="ifscCode"
+                                        value={form.ifscCode}
+                                        onChange={handleChange}
+                                        placeholder="SBIN0000123"
+                                        disabled={isLoading}
+                                        className="w-full bg-[#1c3645] border border-[#334b5e] rounded-lg px-4 py-2 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#0083ff] disabled:opacity-50"
+                                    />
+                                </div>
                             </div>
                         </div>
                     </div>
