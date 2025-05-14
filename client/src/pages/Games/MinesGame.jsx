@@ -315,8 +315,8 @@ const MinesGame = () => {
                                 onClick={() => handleTileClick(idx)}
                                 className={`w-13 h-13 sm:w-18 sm:h-18 lg:w-25 lg:h-25 rounded-lg flex items-center justify-center text-2xl font-bold cursor-pointer bg-[#2c3e4c] hover:bg-[#3b5365] shadow-sm transition-transform duration-200 ease-out
                                     ${wasGameOver ? "scale-100" : ""}
-                                    ${value === "💣" && "bg-red-600"}
-                                    ${value === "💎" && "bg-green-500"}
+                                    ${value === "💣" && "bg-red-600 hover:bg-red-500"}
+                                    ${value === "💎" && "bg-green-500 hover:bg-green-600"}
                                     ${isRevealed && "ring-4 ring-green-300"}
                                     ${!isRevealed && isMine && !isGameStarted && !isExploded ? "opacity-40" : ""}
                                     ${isExploded ? "ring-4 ring-red-500 scale-110" : ""}
