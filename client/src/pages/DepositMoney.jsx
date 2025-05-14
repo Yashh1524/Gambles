@@ -1,4 +1,3 @@
-// src/pages/DepositMoney.jsx
 import React, { useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { toast } from 'react-hot-toast';
@@ -16,8 +15,8 @@ const DepositMoney = () => {
     const navigate = useNavigate();
 
     const handleDeposit = async () => {
-        if (!amount || isNaN(amount) || Number(amount) <= 0) {
-            return toast.error("Enter a valid amount");
+        if (!amount || isNaN(amount) || Number(amount) <= 0 || Number(amount) > 500000) {
+            return toast.error("Enter a valid amount up to ₹5,00,000");
         }
 
         setIsLoading(true);
@@ -45,7 +44,6 @@ const DepositMoney = () => {
                         toast.success("Deposit successful");
                         setUser(prev => ({ ...prev, wallet: data.wallet }));
                         setShowSuccess(true);
-
                         setTimeout(() => navigate("/"), 2500);
                     } catch (verifyErr) {
                         console.error("Verification error", verifyErr);
@@ -81,32 +79,42 @@ const DepositMoney = () => {
     };
 
     return (
-        <div className="h-full bg-[#0f1b24] text-white flex items-center justify-center px-4">
-            {showSuccess ? (
-                <div className="flex flex-col items-center justify-center space-y-4">
-                    <FaCheckCircle className="text-green-500 text-6xl animate-pulse" />
-                    <p className="text-lg font-semibold text-green-400">Deposit Successful!</p>
-                </div>
-            ) : showFailure ? (
-                <div className="flex flex-col items-center justify-center space-y-4">
-                    <FaTimesCircle className="text-red-500 text-6xl animate-pulse" />
-                    <p className="text-lg font-semibold text-red-400">Deposit Failed</p>
+        <div className="min-h-screen bg-[#0f1b24] text-white flex items-center justify-center px-4 py-8">
+            {showSuccess || showFailure ? (
+                <div className="flex flex-col items-center space-y-4">
+                    {showSuccess ? (
+                        <>
+                            <FaCheckCircle className="text-green-500 text-6xl animate-bounce" />
+                            <p className="text-xl font-semibold text-green-400">Deposit Successful!</p>
+                        </>
+                    ) : (
+                        <>
+                            <FaTimesCircle className="text-red-500 text-6xl animate-bounce" />
+                            <p className="text-xl font-semibold text-red-400">Deposit Failed</p>
+                        </>
+                    )}
                 </div>
             ) : (
-                <div className="bg-[#132631] p-8 rounded-2xl shadow-2xl w-full max-w-md">
-                    <h2 className="text-2xl font-bold mb-6 text-center">Deposit Money</h2>
+                <div className="bg-[#132631] p-10 rounded-2xl shadow-xl w-full max-w-md">
+                    <h1 className="text-3xl font-bold mb-6 text-center">Deposit Funds</h1>
+                    
+                    <label className="text-sm mb-2 block text-gray-300">Enter Amount (INR)</label>
                     <input
                         type="number"
-                        placeholder="Enter amount"
-                        className="w-full px-4 py-2 rounded-md bg-[#1e3a4c] text-white mb-4 outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
+                        placeholder="e.g., 5000"
+                        className="w-full px-4 py-3 rounded-md bg-[#1e3a4c] text-white mb-3 outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                         value={amount}
                         onChange={(e) => setAmount(e.target.value)}
                         disabled={isLoading}
+                        max={500000}
+                        defaultValue={0}
                     />
+                    <p className="text-xs text-gray-400 mb-5">Maximum deposit limit: ₹5,00,000</p>
+
                     <button
                         onClick={handleDeposit}
                         disabled={isLoading}
-                        className="w-full py-2 rounded-md bg-[#0083ff] hover:bg-[#3399ff] transition disabled:opacity-50 flex items-center justify-center gap-2"
+                        className="w-full py-3 rounded-md bg-blue-600 hover:bg-blue-700 transition-all disabled:opacity-50 flex items-center justify-center gap-2 font-medium"
                     >
                         {isLoading ? (
                             <>
