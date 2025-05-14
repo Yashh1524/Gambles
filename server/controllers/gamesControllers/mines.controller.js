@@ -42,6 +42,8 @@ export const startMinesGame = async (req, res) => {
             status: "pending",
         });
 
+        // console.log(newBet)
+
         res.status(201).json({
             message: "Mines game started",
             bet: newBet,

@@ -144,7 +144,6 @@ const MinesGame = () => {
             setMultiplier(newMultiplier);
             setCurrentProfit(parseFloat(profit));
 
-            // Send revealed tile to backend
             try {
                 await api.patch("/api/games/mines/reveal-tile", {
                     betId,
@@ -154,14 +153,37 @@ const MinesGame = () => {
                 console.error("Failed to sync tile reveal:", err);
                 toast.error("Failed to update server with revealed tile");
             }
+
+            // ✅ Auto cashout if all safe tiles revealed
+            if (newRevealed.length === 25 - minesCount) {
+                toast.success(`You won ₹${profit} by revealing all safe tiles!`);
+                await endGame(true);
+            }
         }
+
     };
 
+    // const getMultiplier = (safeRevealed, mines) => {
+    //     const safeTiles = 25 - mines;
+    //     const base = 1.1;
+    //     return Number((1 + (safeRevealed / safeTiles) * base).toFixed(2));
+    // };
+
     const getMultiplier = (safeRevealed, mines) => {
-        const safeTiles = 25 - mines;
-        const base = 1.1;
-        return Number((1 + (safeRevealed / safeTiles) * base).toFixed(2));
+        const totalTiles = 25;
+        const houseEdge = 0.99; // 1% house edge
+
+        if (safeRevealed === 0) return 1;
+
+        let probability = 1;
+        for (let i = 0; i < safeRevealed; i++) {
+            probability *= (totalTiles - mines - i) / (totalTiles - i);
+        }
+
+        const multiplier = (1 / probability) * houseEdge;
+        return Number(multiplier.toFixed(2));
     };
+
 
     const cashOut = async () => {
         if (!isGameStarted || revealedTiles.length === 0) return;
