@@ -18,15 +18,11 @@ import { FaUserClock } from "react-icons/fa";
 
 export default function Sidebar() {
     const [isDesktopOpen, setIsDesktopOpen] = useState(true);
-    const [active, setActive] = useState("Dashboard");
     const { user, setUser } = useUser();
     const navigate = useNavigate();
 
-    const menuItemClass = (name) =>
-        `flex items-center gap-3 px-4 py-3 rounded cursor-pointer transition-all ${active === name
-            ? "bg-[#2C3946] border-l-4 border-[#00B4FF] text-white"
-            : "text-gray-300 hover:bg-[#1A2A36]"
-        }`;
+    const menuItemClass =
+        "flex items-center gap-3 px-4 py-3 rounded cursor-pointer text-gray-300 hover:bg-[#1A2A36] transition-all";
 
     const handleLogout = async () => {
         try {
@@ -57,11 +53,8 @@ export default function Sidebar() {
             {/* Navigation links */}
             <nav className="flex-1 px-2 mt-10 space-y-2">
                 <div
-                    onClick={() => {
-                        setActive("Dashboard");
-                        navigate("/");
-                    }}
-                    className={menuItemClass("Dashboard")}
+                    onClick={() => navigate("/")}
+                    className={menuItemClass}
                 >
                     <Home className="w-5 h-5 shrink-0" />
                     {isDesktopOpen && (
@@ -71,11 +64,8 @@ export default function Sidebar() {
 
                 {user && (
                     <div
-                        onClick={() => {
-                            setActive("Profile");
-                            navigate("/profile");
-                        }}
-                        className={menuItemClass("Profile")}
+                        onClick={() => navigate("/profile")}
+                        className={menuItemClass}
                     >
                         <User className="w-5 h-5 shrink-0" />
                         {isDesktopOpen && (
@@ -85,11 +75,8 @@ export default function Sidebar() {
                 )}
 
                 <div
-                    onClick={() => {
-                        setActive("Games");
-                        navigate("/games");
-                    }}
-                    className={menuItemClass("Games")}
+                    onClick={() => navigate("/games")}
+                    className={menuItemClass}
                 >
                     <Gamepad className="w-5 h-5 shrink-0" />
                     {isDesktopOpen && (
@@ -129,7 +116,7 @@ export default function Sidebar() {
                                     onClick={() => navigate("/verify-user")}
                                     className="bg-[#1447E6] w-full flex items-center justify-start px-4 py-2 rounded text-white cursor-pointer gap-2"
                                 >
-                                    <FaUserClock size={20}/>
+                                    <FaUserClock size={20} />
                                     {isDesktopOpen && <span className="font-medium">Verify Account</span>}
                                 </button>
                             )
