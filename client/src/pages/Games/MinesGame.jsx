@@ -247,7 +247,7 @@ const MinesGame = () => {
                             <input
                                 type="number"
                                 className="flex-1 p-2.5 rounded-md bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
-                                value={amount}
+                                value={amount.toFixed(2)}
                                 onChange={(e) => setAmount(Number(e.target.value))}
                                 placeholder="Enter amount"
                                 disabled={isGameStarted}
