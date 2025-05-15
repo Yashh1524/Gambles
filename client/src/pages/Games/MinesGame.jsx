@@ -16,6 +16,7 @@ const MinesGame = () => {
     const [betId, setBetId] = useState(null);
     const [explodedBombIndex, setExplodedBombIndex] = useState(null);
     const [loading, setLoading] = useState(false)
+    const [endGameLoading, setEndGameLoading] = useState(false)
 
     const { user, setUser } = useUser();
 
@@ -159,7 +160,7 @@ const MinesGame = () => {
                 toast.error("Failed to update server with revealed tile");
             }
 
-            // ✅ Auto cashout if all safe tiles revealed
+            // Auto cashout if all safe tiles revealed
             if (newRevealed.length === 25 - minesCount) {
                 toast.success(`You won ₹${profit} by revealing all safe tiles!`);
                 await endGame(true);
@@ -191,12 +192,14 @@ const MinesGame = () => {
 
 
     const cashOut = async () => {
+        setEndGameLoading(true)
         if (!isGameStarted || revealedTiles.length === 0) return;
         toast.success(`You won ₹${currentProfit}`);
         endGame(true);
     };
 
     const endGame = async (won) => {
+        setEndGameLoading(true)
         if (!betId) return toast.error("Bet ID not found");
 
         try {
@@ -213,6 +216,8 @@ const MinesGame = () => {
         } catch (err) {
             console.error("End game error:", err);
             toast.error("Failed to end game");
+        } finally {
+            setEndGameLoading(false)
         }
 
         setGrid(prev => {
@@ -301,9 +306,14 @@ const MinesGame = () => {
 
                             <button
                                 onClick={cashOut}
+                                disabled={endGameLoading}
                                 className="w-full py-2 mb-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-bold shadow"
                             >
-                                Cash Out
+                                {!endGameLoading ? (
+                                    "Cash Out"
+                                ) : (
+                                    <ImSpinner2 className="animate-spin mx-auto" />
+                                )}
                             </button>
 
                             <button
