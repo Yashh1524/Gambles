@@ -348,10 +348,18 @@ const MinesGame = () => {
                                 `}
                             >
                                 {value === "💣" && (
-                                    <img src="/images/mines-game/bomb.svg" alt="Bomb" className="w-8 h-8 sm:w-10 sm:h-10" />
+                                    <img 
+                                        src="/images/mines-game/bomb.svg" 
+                                        alt="Bomb" 
+                                        className="object-cover p-3" 
+                                    />
                                 )}
                                 {value === "💎" && (
-                                    <img src="/images/mines-game/diamond.svg" alt="Diamond" className="w-8 h-8 sm:w-10 sm:h-10" />
+                                    <img 
+                                        src="/images/mines-game/diamond.svg" 
+                                        alt="Diamond" 
+                                        className="object-cover p-3" 
+                                    />
                                 )}
                             </div>
                         );
