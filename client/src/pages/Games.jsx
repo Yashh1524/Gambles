@@ -11,8 +11,7 @@ const Games = () => {
         const fetchGames = async () => {
             try {
                 const res = await api.get("/api/games/get-all-games");
-                const data = res.data; // Axios auto-parses JSON
-                setGames(data);
+                setGames(res.data);
             } catch (err) {
                 console.error(err);
                 setError("Could not load games.");
@@ -24,19 +23,28 @@ const Games = () => {
         fetchGames();
     }, []);
 
-    if (loading) return <p>Loading games...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) return <p className="text-white">Loading games...</p>;
+    if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <div>
-            <h1>Choose a Game</h1>
-            <ul>
+        <div className="p-6">
+            <h1 className="text-2xl font-bold text-white mb-4">Games</h1>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4">
                 {games.map((game) => (
-                    <li key={game._id}>
-                        <Link to={`/games/${game.name}`}>{game.name}</Link>
-                    </li>
+                    <Link
+                        key={game._id}
+                        to={`/games/${game.name}`}
+                        className="transition-transform hover:scale-105"
+                    >
+                        <img
+                            src={game.image}
+                            alt={game.name}
+                            className="rounded-xl shadow-md w-full h-auto"
+                        />
+                    </Link>
                 ))}
-            </ul>
+            </div>
         </div>
     );
 };

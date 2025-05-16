@@ -58,7 +58,7 @@ function Navbar({ setIsSidebarOpen, setIsWalletOpen }) {
                     {/* Profile Icon */}
                     <button
                         onClick={() => navigate('/profile')}
-                        className="p-1 rounded-full hover:bg-[#0e1d28] transition"
+                        className="hidden md:block p-1 rounded-full hover:bg-[#0e1d28] transition"
                     >
                         <User className="w-6 h-6 text-white" />
                     </button>
