@@ -1,4 +1,5 @@
-// controllers/minesGame.controller.js
+
+// mines.controller.js (refactored)
 import userModel from "../../models/user.model.js";
 import betModel from "../../models/bet.model.js";
 import gameModel from "../../models/game.model.js";
@@ -14,11 +15,7 @@ export const startMinesGame = async (req, res) => {
     try {
         const user = await userModel.findById(userId);
         if (!user) return res.status(404).json({ message: "User not found" });
-
-        // console.log("Wallet:", user.wallet, "Amount:", amount)
-        if (user.wallet < amount) {
-            return res.status(400).json({ message: "Insufficient wallet balance" });
-        }
+        if (user.wallet < amount) return res.status(400).json({ message: "Insufficient balance" });
 
         user.wallet -= amount;
         await user.save();
@@ -27,8 +24,7 @@ export const startMinesGame = async (req, res) => {
         if (!game) return res.status(404).json({ message: "Game not found" });
 
         const allTiles = Array.from({ length: 25 }, (_, i) => i);
-        const shuffled = allTiles.sort(() => 0.5 - Math.random());
-        const minePositions = shuffled.slice(0, minesCount);
+        const minePositions = allTiles.sort(() => 0.5 - Math.random()).slice(0, minesCount);
 
         const newBet = await betModel.create({
             user: userId,
@@ -42,48 +38,82 @@ export const startMinesGame = async (req, res) => {
             status: "pending",
         });
 
-        // console.log(newBet)
-
-        res.status(201).json({
-            message: "Mines game started",
-            bet: newBet,
-            wallet: user.wallet, // return updated wallet
-        });
+        res.status(201).json({ message: "Game started", bet: newBet._id, wallet: user.wallet });
     } catch (err) {
-        console.error("Mines game error:", err);
+        console.error("startMinesGame error:", err);
         res.status(500).json({ message: "Failed to start game" });
     }
 };
 
-export const endMinesGame = async (req, res) => {
-    const { betId, status, revealedTiles } = req.body;
+export const revealTile = async (req, res) => {
+    const { betId, tileIndex } = req.body;
     const userId = req.user.id;
-
-    if (!betId || !["win", "lose"].includes(status)) {
-        return res.status(400).json({ message: "Invalid game result" });
-    }
 
     try {
         const bet = await betModel.findById(betId);
         if (!bet || bet.user.toString() !== userId) {
             return res.status(404).json({ message: "Bet not found" });
         }
+        if (bet.status !== "pending") return res.status(400).json({ message: "Game ended" });
+        if (bet.gameData.revealedTiles.includes(tileIndex)) return res.status(400).json({ message: "Tile already revealed" });
 
-        if (bet.status !== "pending") {
-            return res.status(400).json({ message: "Game already finished" });
+        const isMine = bet.gameData.minePositions.includes(tileIndex);
+        bet.gameData.revealedTiles.push(tileIndex);
+        bet.markModified("gameData");
+        await bet.save();
+
+        const safeTiles = 25 - bet.gameData.mineCount;
+        const revealedSafe = bet.gameData.revealedTiles.filter(i => !bet.gameData.minePositions.includes(i)).length;
+
+        let winStatus = null;
+        let multiplier = 1;
+        let profit = 0;
+        if (!isMine) {
+            let probability = 1;
+            for (let i = 0; i < revealedSafe; i++) {
+                probability *= (25 - bet.gameData.mineCount - i) / (25 - i);
+            }
+            multiplier = Number(((1 / probability) * 0.99).toFixed(2));
+            profit = Number((bet.betAmount * multiplier).toFixed(2));
+            if (revealedSafe === safeTiles) winStatus = "win";
         }
+
+        res.status(200).json({
+            message: "Tile revealed",
+            isMine,
+            revealedTiles: bet.gameData.revealedTiles,
+            status: winStatus,
+            multiplier,
+            profit,
+        });
+    } catch (err) {
+        console.error("revealTile error:", err);
+        res.status(500).json({ message: "Reveal failed" });
+    }
+};
+
+export const endMinesGame = async (req, res) => {
+    const { betId, status, revealedTiles } = req.body;
+    const userId = req.user.id;
+    try {
+        const bet = await betModel.findById(betId);
+        if (!bet || bet.user.toString() !== userId) return res.status(404).json({ message: "Bet not found" });
+        if (bet.status !== "pending") return res.status(400).json({ message: "Already finished" });
 
         bet.status = "completed";
         bet.gameData.revealedTiles = revealedTiles;
-
         let winAmount = 0;
 
         const user = await userModel.findById(userId);
         if (status === "win") {
-            const mineCount = bet.gameData.mineCount;
-            const safeTiles = 25 - mineCount;
-            const base = 1.1;
-            const multiplier = 1 + (revealedTiles.length / safeTiles) * base;
+            const safeTiles = 25 - bet.gameData.mineCount;
+            const safeRevealed = revealedTiles.filter(i => !bet.gameData.minePositions.includes(i)).length;
+
+            let probability = 1;
+            for (let i = 0; i < safeRevealed; i++) {
+                probability *= (safeTiles - i) / (25 - i);
+            }
+            const multiplier = Number(((1 / probability) * 0.99).toFixed(2));
             winAmount = Number((bet.betAmount * multiplier).toFixed(2));
 
             user.wallet += winAmount;
@@ -97,26 +127,17 @@ export const endMinesGame = async (req, res) => {
         }
 
         await bet.save();
-
-        res.status(200).json({
-            message: "Game finished",
-            result: status,
-            winAmount,
-            wallet: user.wallet, // return updated wallet
-        });
+        res.status(200).json({ message: "Game ended", wallet: user.wallet });
     } catch (err) {
-        console.error("Finish mines game error:", err);
-        res.status(500).json({ message: "Error finishing game" });
+        console.error("endMinesGame error:", err);
+        res.status(500).json({ message: "Error ending game" });
     }
 };
 
 export const getPendingGame = async (req, res) => {
     const userId = req.user.id;
-
     try {
         const game = await gameModel.findOne({ name: "mines" });
-        if (!game) return res.status(404).json({ message: "Game not found" });
-
         const pendingGame = await betModel.findOne({
             user: userId,
             game: game._id,
@@ -127,39 +148,19 @@ export const getPendingGame = async (req, res) => {
             return res.status(200).json({ message: "No pending game", bet: null });
         }
 
-        res.status(200).json({ message: "Pending game found", bet: pendingGame });
+        // Return only safe fields
+        const safeData = {
+            _id: pendingGame._id,
+            betAmount: pendingGame.betAmount,
+            gameData: {
+                mineCount: pendingGame.gameData.mineCount,
+                revealedTiles: pendingGame.gameData.revealedTiles,
+            },
+        };
+
+        res.status(200).json({ message: "Pending game found", bet: safeData });
     } catch (err) {
-        console.error("Get pending mines game error:", err);
-        res.status(500).json({ message: "Error fetching pending game" });
-    }
-};
-
-// controllers/minesGame.controller.js
-
-export const revealTile = async (req, res) => {
-    const { betId, tileIndex } = req.body;
-    const userId = req.user.id;
-    // console.log("betId:", betId, "tileIndex:", tileIndex, "userId:", userId);
-    try {
-        const bet = await betModel.findById(betId);
-        // console.log(bet)
-        if (!bet || bet.user.toString() !== userId) {
-            return res.status(404).json({ message: "Bet not found" });
-        }
-
-        if (bet.status !== "pending") {
-            return res.status(400).json({ message: "Game already ended" });
-        }
-
-        if (!bet.gameData.revealedTiles.includes(tileIndex)) {
-            bet.gameData.revealedTiles.push(tileIndex);
-            bet.markModified('gameData'); // Mark gameData as modified
-            await bet.save();
-        }
-
-        res.status(200).json({ message: "Tile revealed", revealedTiles: bet.gameData.revealedTiles });
-    } catch (err) {
-        console.error("Reveal tile error:", err);
-        res.status(500).json({ message: "Failed to update revealed tile" });
+        console.error("getPendingGame error:", err);
+        res.status(500).json({ message: "Error getting pending game" });
     }
 };

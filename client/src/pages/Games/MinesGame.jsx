@@ -1,3 +1,4 @@
+// MinesGame.jsx (refactored)
 import React, { useState, useRef, useEffect } from "react";
 import { toast } from "react-hot-toast";
 import api from "@/utils/api";
@@ -8,15 +9,14 @@ const MinesGame = () => {
     const [amount, setAmount] = useState(0);
     const [minesCount, setMinesCount] = useState(3);
     const [grid, setGrid] = useState(Array(25).fill(null));
-    const [minePositions, setMinePositions] = useState([]);
     const [revealedTiles, setRevealedTiles] = useState([]);
     const [isGameStarted, setIsGameStarted] = useState(false);
     const [currentProfit, setCurrentProfit] = useState(0);
     const [multiplier, setMultiplier] = useState(1);
     const [betId, setBetId] = useState(null);
     const [explodedBombIndex, setExplodedBombIndex] = useState(null);
-    const [loading, setLoading] = useState(false)
-    const [endGameLoading, setEndGameLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
+    const [endGameLoading, setEndGameLoading] = useState(false);
 
     const { user, setUser } = useUser();
 
@@ -42,25 +42,16 @@ const MinesGame = () => {
     useEffect(() => {
         const fetchPendingGame = async () => {
             if (!user || !user.isVerified) return;
-
             try {
                 const { data } = await api.get("/api/games/mines/pending-mine");
                 const pendingBet = data.bet;
-                console.log(data)
                 if (pendingBet) {
-                    const mines = pendingBet.gameData.minePositions;
                     const revealed = pendingBet.gameData.revealedTiles;
                     const amt = pendingBet.betAmount;
 
-                    const newMultiplier = getMultiplier(revealed.length, pendingBet.gameData.mineCount);
-                    const profit = (amt * newMultiplier).toFixed(2);
-
-                    setMinePositions(mines);
                     setGrid(prev => {
                         const newGrid = [...prev];
-                        revealed.forEach(idx => {
-                            newGrid[idx] = "💎";
-                        });
+                        revealed.forEach(idx => newGrid[idx] = "💎");
                         return newGrid;
                     });
                     setRevealedTiles(revealed);
@@ -68,171 +59,98 @@ const MinesGame = () => {
                     setBetId(pendingBet._id);
                     setAmount(amt);
                     setMinesCount(pendingBet.gameData.mineCount);
-                    setMultiplier(newMultiplier);
-                    setCurrentProfit(parseFloat(profit));
-
-                    // toast.success("Resumed pending game");
+                    setMultiplier(1);
+                    setCurrentProfit(0);
                 }
             } catch (err) {
                 console.error("Error checking pending game:", err);
             }
         };
-
         fetchPendingGame();
     }, [user]);
 
     const startGame = async () => {
-        setLoading(true)
         if (!user?.isVerified) return toast.error("Please verify account first.");
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
+        setLoading(true);
 
         try {
-            const { data } = await api.post("/api/games/mines/start-mine", {
-                amount,
-                minesCount,
-            });
-
-            const mines = data.bet.gameData.minePositions;
-            setMinePositions(mines);
-            setBetId(data.bet._id);
+            const { data } = await api.post("/api/games/mines/start-mine", { amount, minesCount });
+            console.log(data)
+            setBetId(data.bet);
             setGrid(Array(25).fill(null));
             setRevealedTiles([]);
             setIsGameStarted(true);
             setCurrentProfit(0);
             setMultiplier(1);
             setExplodedBombIndex(null);
-
             setUser(prev => ({ ...prev, wallet: data.wallet }));
             toast.success("Game started");
         } catch (err) {
-            console.error(err);
             toast.error(err?.response?.data?.message || "Failed to start game");
         } finally {
-            setLoading(false)
+            setLoading(false);
         }
-    };
-
-    const pickRandomTile = () => {
-        const available = grid
-            .map((val, idx) => (val === null ? idx : null))
-            .filter((v) => v !== null);
-
-        if (available.length === 0) return;
-
-        const randomIndex = available[Math.floor(Math.random() * available.length)];
-        handleTileClick(randomIndex);
     };
 
     const handleTileClick = async (index) => {
         if (!isGameStarted || revealedTiles.includes(index)) return;
+        try {
+            const { data } = await api.patch("/api/games/mines/reveal-tile", { betId, tileIndex: index });
+            const { isMine, revealedTiles: updated, status, multiplier, profit } = data;
 
-        const isMine = minePositions.includes(index);
+            setGrid(prev => {
+                const newGrid = [...prev];
+                newGrid[index] = isMine ? "💣" : "💎";
+                return newGrid;
+            });
+            setRevealedTiles(updated);
+            setMultiplier(multiplier);
+            setCurrentProfit(profit);
 
-        // Reveal locally for instant feedback
-        setGrid(prev => {
-            const newGrid = [...prev];
-            newGrid[index] = isMine ? "💣" : "💎";
-            return newGrid;
-        });
-
-        if (isMine) {
-            setExplodedBombIndex(index);
-            playBombSound();
-            toast.error("You hit a mine!");
-            await endGame(false);
-        } else {
-            playDiamondSound();
-            const newRevealed = [...revealedTiles, index];
-            setRevealedTiles(newRevealed);
-
-            const newMultiplier = getMultiplier(newRevealed.length, minesCount);
-            const profit = (amount * newMultiplier).toFixed(2);
-            setMultiplier(newMultiplier);
-            setCurrentProfit(parseFloat(profit));
-
-            try {
-                await api.patch("/api/games/mines/reveal-tile", {
-                    betId,
-                    tileIndex: index,
-                });
-            } catch (err) {
-                console.error("Failed to sync tile reveal:", err);
-                toast.error("Failed to update server with revealed tile");
+            if (isMine) {
+                playBombSound();
+                setExplodedBombIndex(index);
+                toast.error("You hit a mine!");
+                await endGame(false);
+            } else {
+                playDiamondSound();
+                if (status === "win") {
+                    toast.success(`You won ₹${profit} by revealing all safe tiles!`);
+                    await endGame(true);
+                }
             }
-
-            // Auto cashout if all safe tiles revealed
-            if (newRevealed.length === 25 - minesCount) {
-                toast.success(`You won ₹${profit} by revealing all safe tiles!`);
-                await endGame(true);
-            }
+        } catch (err) {
+            console.error("Reveal error:", err);
+            toast.error("Reveal failed");
         }
-
     };
-
-    // const getMultiplier = (safeRevealed, mines) => {
-    //     const safeTiles = 25 - mines;
-    //     const base = 1.1;
-    //     return Number((1 + (safeRevealed / safeTiles) * base).toFixed(2));
-    // };
-
-    const getMultiplier = (safeRevealed, mines) => {
-        const totalTiles = 25;
-        const houseEdge = 0.99; // 1% house edge
-
-        if (safeRevealed === 0) return 1;
-
-        let probability = 1;
-        for (let i = 0; i < safeRevealed; i++) {
-            probability *= (totalTiles - mines - i) / (totalTiles - i);
-        }
-
-        const multiplier = (1 / probability) * houseEdge;
-        return Number(multiplier.toFixed(2));
-    };
-
 
     const cashOut = async () => {
-        setEndGameLoading(true)
+        setEndGameLoading(true);
         if (!isGameStarted || revealedTiles.length === 0) return;
         toast.success(`You won ₹${currentProfit}`);
-        endGame(true);
+        await endGame(true);
     };
 
     const endGame = async (won) => {
-        setEndGameLoading(true)
-        if (!betId) return toast.error("Bet ID not found");
-
+        if (!betId) return toast.error("Bet ID missing");
         try {
             const { data } = await api.post("/api/games/mines/end-mine", {
-                status: won ? "win" : "lose",
-                revealedTiles,
-                betId,
+                betId, status: won ? "win" : "lose", revealedTiles
             });
-
-            if (data.wallet !== undefined) {
-                setUser(prev => ({ ...prev, wallet: data.wallet }));
-            }
-
+            setUser(prev => ({ ...prev, wallet: data.wallet }));
         } catch (err) {
             console.error("End game error:", err);
-            toast.error("Failed to end game");
         } finally {
-            setEndGameLoading(false)
+            setEndGameLoading(false);
+            setIsGameStarted(false);
+            setMultiplier(1);
+            setCurrentProfit(0);
+            setBetId(null);
         }
-
-        setGrid(prev => {
-            return prev.map((val, idx) => {
-                if (minePositions.includes(idx)) return "💣";
-                if (revealedTiles.includes(idx)) return "💎";
-                return val;
-            });
-        });
-
-        setIsGameStarted(false);
-        setMultiplier(1);
-        setCurrentProfit(0);
-        setBetId(null);
     };
+
 
     return (
         <div className="min-h-full bg-[#0f1b24] text-white flex items-center px-4 py-6">
@@ -247,11 +165,13 @@ const MinesGame = () => {
                             <input
                                 type="number"
                                 className="flex-1 p-2.5 rounded-md bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
-                                value={amount.toFixed(2)}
+                                value={amount === 0 ? '' : amount}
                                 onChange={(e) => setAmount(Number(e.target.value))}
+                                onWheel={(e) => e.target.blur()} // Disable scroll change
                                 placeholder="Enter amount"
                                 disabled={isGameStarted}
                             />
+
                             <button
                                 type="button"
                                 disabled={isGameStarted}
@@ -291,6 +211,7 @@ const MinesGame = () => {
                         ) : (
                             <button
                                 onClick={startGame}
+                                disabled={loading}
                                 className="w-full py-2 mt-2 rounded bg-green-500 hover:bg-green-600 text-black font-bold shadow"
                             >
                                 Bet
@@ -317,7 +238,13 @@ const MinesGame = () => {
                             </button>
 
                             <button
-                                onClick={pickRandomTile}
+                                onClick={() => {
+                                    const available = grid.map((val, idx) => (val === null ? idx : null)).filter((v) => v !== null);
+                                    if (available.length > 0) {
+                                        const randomIndex = available[Math.floor(Math.random() * available.length)];
+                                        handleTileClick(randomIndex);
+                                    }
+                                }}
                                 className="w-full py-2 rounded bg-blue-500 hover:bg-blue-600 text-white font-bold shadow"
                             >
                                 Pick Random Tile
@@ -329,7 +256,6 @@ const MinesGame = () => {
                 {/* Game Grid */}
                 <div className="grid grid-cols-5 gap-2 md:gap-3 justify-center mx-auto">
                     {grid.map((value, idx) => {
-                        const isMine = minePositions.includes(idx);
                         const isRevealed = revealedTiles.includes(idx);
                         const wasGameOver = !isGameStarted && value !== null;
                         const isExploded = idx === explodedBombIndex;
@@ -339,26 +265,25 @@ const MinesGame = () => {
                                 key={idx}
                                 onClick={() => handleTileClick(idx)}
                                 className={`w-13 h-13 sm:w-18 sm:h-18 lg:w-25 lg:h-25 rounded-lg flex items-center justify-center text-2xl font-bold cursor-pointer bg-[#2c3e4c] hover:bg-[#3b5365] shadow-sm transition-transform duration-200 ease-out
-                                    ${wasGameOver ? "scale-100" : ""}
-                                    ${value === "💣" && "bg-red-600 hover:bg-red-500"}
-                                    ${value === "💎" && "bg-green-500 hover:bg-green-600"}
-                                    ${isRevealed && "ring-4 ring-green-600"}
-                                    ${!isRevealed && isMine && !isGameStarted && !isExploded ? "opacity-40" : ""}
-                                    ${isExploded ? "ring-4 ring-red-500 scale-110" : ""}
-                                `}
+                                ${wasGameOver ? "scale-100" : ""}
+                                ${value === "💣" && "bg-red-600 hover:bg-red-500"}
+                                ${value === "💎" && "bg-green-500 hover:bg-green-600"}
+                                ${isRevealed && "ring-4 ring-green-600"}
+                                ${isExploded ? "ring-4 ring-red-500 scale-110" : ""}
+                            `}
                             >
                                 {value === "💣" && (
-                                    <img 
-                                        src="/images/mines-game/bomb.svg" 
-                                        alt="Bomb" 
-                                        className="object-cover p-3" 
+                                    <img
+                                        src="/images/mines-game/bomb.svg"
+                                        alt="Bomb"
+                                        className="object-cover p-3"
                                     />
                                 )}
                                 {value === "💎" && (
-                                    <img 
-                                        src="/images/mines-game/diamond.svg" 
-                                        alt="Diamond" 
-                                        className="object-cover p-3" 
+                                    <img
+                                        src="/images/mines-game/diamond.svg"
+                                        alt="Diamond"
+                                        className="object-cover p-3"
                                     />
                                 )}
                             </div>
@@ -372,6 +297,7 @@ const MinesGame = () => {
             <audio ref={bombSoundRef} src="/sounds/bomb.mp3" preload="auto" />
         </div>
     );
+
 };
 
 export default MinesGame;
