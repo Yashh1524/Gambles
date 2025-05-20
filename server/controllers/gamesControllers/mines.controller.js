@@ -3,6 +3,7 @@
 import userModel from "../../models/user.model.js";
 import betModel from "../../models/bet.model.js";
 import gameModel from "../../models/game.model.js";
+import { getMinesMultiplier } from "../../utils/getMultipliers.js";
 
 export const startMinesGame = async (req, res) => {
     const { amount, minesCount } = req.body;
@@ -54,31 +55,37 @@ export const revealTile = async (req, res) => {
         if (!bet || bet.user.toString() !== userId) {
             return res.status(404).json({ message: "Bet not found" });
         }
-        if (bet.status !== "pending") return res.status(400).json({ message: "Game ended" });
-        if (bet.gameData.revealedTiles.includes(tileIndex)) return res.status(400).json({ message: "Tile already revealed" });
+
+        if (bet.status !== "pending") {
+            return res.status(400).json({ message: "Game ended" });
+        }
+
+        if (bet.gameData.revealedTiles.includes(tileIndex)) {
+            return res.status(400).json({ message: "Tile already revealed" });
+        }
 
         const isMine = bet.gameData.minePositions.includes(tileIndex);
         bet.gameData.revealedTiles.push(tileIndex);
         bet.markModified("gameData");
         await bet.save();
 
-        const safeTiles = 25 - bet.gameData.mineCount;
-        const revealedSafe = bet.gameData.revealedTiles.filter(i => !bet.gameData.minePositions.includes(i)).length;
+        const mineCount = bet.gameData.mineCount;
+        const safeTiles = 25 - mineCount;
+        const revealedSafe = bet.gameData.revealedTiles.filter(
+            i => !bet.gameData.minePositions.includes(i)
+        ).length;
 
         let winStatus = null;
         let multiplier = 1;
         let profit = 0;
+
         if (!isMine) {
-            let probability = 1;
-            for (let i = 0; i < revealedSafe; i++) {
-                probability *= (25 - bet.gameData.mineCount - i) / (25 - i);
-            }
-            multiplier = Number(((1 / probability) * 0.99).toFixed(2));
+            multiplier = getMinesMultiplier(revealedSafe, mineCount);
             profit = Number((bet.betAmount * multiplier).toFixed(2));
             if (revealedSafe === safeTiles) winStatus = "win";
         }
 
-        res.status(200).json({
+        return res.status(200).json({
             message: "Tile revealed",
             isMine,
             revealedTiles: bet.gameData.revealedTiles,
@@ -88,7 +95,7 @@ export const revealTile = async (req, res) => {
         });
     } catch (err) {
         console.error("revealTile error:", err);
-        res.status(500).json({ message: "Reveal failed" });
+        return res.status(500).json({ message: "Reveal failed" });
     }
 };
 
