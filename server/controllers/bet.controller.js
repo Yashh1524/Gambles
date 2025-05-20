@@ -127,7 +127,7 @@ export const getUserTotalWinningAmountAndWinningStreak = async (req, res) => {
         let calculatingStreak = true;
         for (const bet of bets) {
             if (bet.isWin) {
-                totalWinningAmount += bet.winAmount;
+                totalWinningAmount += (bet.winAmount - bet.betAmount);
                 if (calculatingStreak) totalWinningStreak += 1;
             } else {
                 totalWinningAmount -= bet.betAmount;
