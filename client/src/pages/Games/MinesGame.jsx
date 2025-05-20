@@ -141,7 +141,7 @@ const MinesGame = () => {
             });
             setUser(prev => ({ ...prev, wallet: data.wallet }));
         } catch (err) {
-            console.error("End game error:", err);
+            console.error("End game error:", err);  
         } finally {
             setEndGameLoading(false);
             setIsGameStarted(false);
@@ -150,7 +150,6 @@ const MinesGame = () => {
             setBetId(null);
         }
     };
-
 
     return (
         <div className="min-h-full bg-[#0f1b24] text-white flex items-center px-4 py-6">
