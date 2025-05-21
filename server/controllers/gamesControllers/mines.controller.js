@@ -99,6 +99,21 @@ export const revealTile = async (req, res) => {
     }
 };
 
+const getMultiplier = (safeRevealed, mines) => {
+    const totalTiles = 25;
+    const houseEdge = 0.99; // 1% house edge
+
+    if (safeRevealed === 0) return 1;
+
+    let probability = 1;
+    for (let i = 0; i < safeRevealed; i++) {
+        probability *= (totalTiles - mines - i) / (totalTiles - i);
+    }
+
+    const multiplier = (1 / probability) * houseEdge;
+    return Number(multiplier.toFixed(2));
+};
+
 export const endMinesGame = async (req, res) => {
     const { betId } = req.body;
     const userId = req.user.id;
@@ -118,17 +133,11 @@ export const endMinesGame = async (req, res) => {
         let isWin = false;
 
         if (!hitMine) {
-            const safeTiles = 25 - mineCount;
+            // console.log(revealedTiles.length)
             const safeRevealed = revealedTiles.length;
+            const multiplier = getMultiplier(safeRevealed, mineCount);
 
-            let probability = 1;
-            for (let i = 0; i < safeRevealed; i++) {
-                probability *= (safeTiles - i) / (25 - i);
-            }
-
-            const multiplier = Number(((1 / probability) * 0.99).toFixed(2));
             winAmount = Number((bet.betAmount * multiplier).toFixed(2));
-
             user.wallet += winAmount;
             await user.save();
 
