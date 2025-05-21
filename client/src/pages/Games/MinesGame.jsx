@@ -25,6 +25,7 @@ const MinesGame = () => {
     const [endGameLoading, setEndGameLoading] = useState(false);
     const [totalWin, setTotalWin] = useState(0)
     const [winningStreak, setWinningStreak] = useState(0)
+    const [loadingWinningData, setLoadingWinningData] = useState(false)
 
     const { user, setUser } = useUser();
 
@@ -50,6 +51,7 @@ const MinesGame = () => {
     useEffect(() => {
         const fetchTotalWinAndWinStreakByGame = async () => {
             try {
+                setLoadingWinningData(true)
                 const response = await api.get(
                     `/api/bet/get-user-totalwin-and-winningstreak-by-game?gameId=${gameId || "6822f03212a5549e72f26829"}`
                 );
@@ -64,6 +66,8 @@ const MinesGame = () => {
                 setWinningStreak(totalWinningStreak);
             } catch (error) {
                 console.error("Error fetching total win and win streak:", error);
+            } finally {
+                setLoadingWinningData(false)
             }
         };
 
@@ -205,11 +209,27 @@ const MinesGame = () => {
                         <div className="grid grid-cols-2 gap-2 mb-4">
                             <div className="bg-[#1e3a4c] p-3 rounded-lg shadow-inner text-white text-center">
                                 <p className="text-xs text-gray-300">Total Win</p>
-                                <p className="text-lg font-bold text-green-400">₹{totalWin}</p>
+                                {
+                                    loadingWinningData ? (
+                                        <div className="flex justify-center pt-2">
+                                            <ImSpinner2 className="animate-spin text-green-400" />
+                                        </div>
+                                    ) : (
+                                        <p className={`text-lg font-bold ${totalWin > 0 ? "text-green-400" : "text-red-500"}`}>₹{totalWin}</p>
+                                    )
+                                }
                             </div>
                             <div className="bg-[#1e3a4c] p-3 rounded-lg shadow-inner text-white text-center">
                                 <p className="text-xs text-gray-300">Winning Streak</p>
-                                <p className="text-lg font-bold text-yellow-300">{winningStreak}</p>
+                                {
+                                    loadingWinningData ? (
+                                        <div className="flex justify-center pt-2">
+                                            <ImSpinner2 className="animate-spin text-yellow-400" />
+                                        </div>
+                                    ) : (
+                                        <p className="text-lg font-bold text-yellow-300">{winningStreak}</p>
+                                    )
+                                }
                             </div>
                         </div>
                         <label className="block mb-2 text-sm text-gray-300">Bet Amount (₹)</label>
