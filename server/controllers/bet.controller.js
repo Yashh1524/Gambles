@@ -164,7 +164,7 @@ export const getUserTotalWinningAmountAndWinningStreak = async (req, res) => {
 export const getUserTotalWinningAmountAndWinningStreakByGame = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { gameId } = req.body
+        const { gameId } = req.query;
         
         const bets = await betModel
             .find({ user: userId, status: "completed", game: gameId })

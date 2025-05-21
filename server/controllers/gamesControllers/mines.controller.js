@@ -134,7 +134,7 @@ export const endMinesGame = async (req, res) => {
         }
 
         await bet.save();
-        res.status(200).json({ message: "Game ended", wallet: user.wallet });
+        res.status(200).json({ message: "Game ended", wallet: user.wallet, bet });
     } catch (err) {
         console.error("endMinesGame error:", err);
         res.status(500).json({ message: "Error ending game" });

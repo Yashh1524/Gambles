@@ -4,8 +4,14 @@ import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { useUser } from "@/contexts/UserContext";
 import { ImSpinner2 } from "react-icons/im";
+import { useLocation } from "react-router-dom";
 
 const MinesGame = () => {
+
+    const location = useLocation();
+    const { gameId } = location.state || {};
+    // console.log(gameId)
+
     const [amount, setAmount] = useState(0);
     const [minesCount, setMinesCount] = useState(3);
     const [grid, setGrid] = useState(Array(25).fill(null));
@@ -17,6 +23,8 @@ const MinesGame = () => {
     const [explodedBombIndex, setExplodedBombIndex] = useState(null);
     const [loading, setLoading] = useState(false);
     const [endGameLoading, setEndGameLoading] = useState(false);
+    const [totalWin, setTotalWin] = useState(0)
+    const [winningStreak, setWinningStreak] = useState(0)
 
     const { user, setUser } = useUser();
 
@@ -40,8 +48,34 @@ const MinesGame = () => {
     };
 
     useEffect(() => {
+        const fetchTotalWinAndWinStreakByGame = async () => {
+            try {
+                const response = await api.get(
+                    `/api/bet/get-user-totalwin-and-winningstreak-by-game?gameId=${gameId || "6822f03212a5549e72f26829"}`
+                );
+
+                // Access data inside response.data
+                const { success, totalWinningAmount, totalWinningStreak } = response.data;
+
+                if (!success)
+                    throw new Error("Error while fetching total win and win streak data");
+
+                setTotalWin(totalWinningAmount);
+                setWinningStreak(totalWinningStreak);
+            } catch (error) {
+                console.error("Error fetching total win and win streak:", error);
+            }
+        };
+
+        fetchTotalWinAndWinStreakByGame();
+    }, []);
+
+
+    useEffect(() => {
         const fetchPendingGame = async () => {
-            if (!user || !user.isVerified) return;
+            if (!user || !user.isVerified) {
+                return
+            };
             try {
                 const { data } = await api.get("/api/games/mines/pending-mine");
                 const pendingBet = data.bet;
@@ -70,6 +104,7 @@ const MinesGame = () => {
     }, [user]);
 
     const startGame = async () => {
+        if(!user) return toast.error("Please login to play game")
         if (!user?.isVerified) return toast.error("Please verify account first.");
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
         setLoading(true);
@@ -139,9 +174,17 @@ const MinesGame = () => {
             const { data } = await api.post("/api/games/mines/end-mine", {
                 betId, status: won ? "win" : "lose", revealedTiles
             });
+            console.log(data);
+            if(won) {
+                setTotalWin(totalWin + data.bet.winAmount - data.bet.betAmount)
+                setWinningStreak(winningStreak + 1)
+            } else {
+                setTotalWin(totalWin - data.bet.betAmount)
+                setWinningStreak(0)
+            }
             setUser(prev => ({ ...prev, wallet: data.wallet }));
         } catch (err) {
-            console.error("End game error:", err);  
+            console.error("End game error:", err);
         } finally {
             setEndGameLoading(false);
             setIsGameStarted(false);
@@ -159,6 +202,16 @@ const MinesGame = () => {
                     <h2 className="text-2xl font-semibold mb-4 text-center">💣 Mines Game</h2>
 
                     <div className="mb-4">
+                        <div className="grid grid-cols-2 gap-2 mb-4">
+                            <div className="bg-[#1e3a4c] p-3 rounded-lg shadow-inner text-white text-center">
+                                <p className="text-xs text-gray-300">Total Win</p>
+                                <p className="text-lg font-bold text-green-400">₹{totalWin}</p>
+                            </div>
+                            <div className="bg-[#1e3a4c] p-3 rounded-lg shadow-inner text-white text-center">
+                                <p className="text-xs text-gray-300">Winning Streak</p>
+                                <p className="text-lg font-bold text-yellow-300">{winningStreak}</p>
+                            </div>
+                        </div>
                         <label className="block mb-2 text-sm text-gray-300">Bet Amount (₹)</label>
                         <div className="flex items-center gap-2">
                             <input

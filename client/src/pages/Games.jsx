@@ -35,6 +35,7 @@ const Games = () => {
                     <Link
                         key={game._id}
                         to={`/games/${game.name}`}
+                        state={{ gameId: game._id }}
                         className="transition-transform hover:scale-105"
                     >
                         <img
