@@ -100,41 +100,52 @@ export const revealTile = async (req, res) => {
 };
 
 export const endMinesGame = async (req, res) => {
-    const { betId, status, revealedTiles } = req.body;
+    const { betId } = req.body;
     const userId = req.user.id;
+
     try {
         const bet = await betModel.findById(betId);
-        if (!bet || bet.user.toString() !== userId) return res.status(404).json({ message: "Bet not found" });
-        if (bet.status !== "pending") return res.status(400).json({ message: "Already finished" });
+        if (!bet || bet.user.toString() !== userId)
+            return res.status(404).json({ message: "Bet not found" });
+        if (bet.status !== "pending")
+            return res.status(400).json({ message: "Already finished" });
 
-        bet.status = "completed";
-        bet.gameData.revealedTiles = revealedTiles;
-        let winAmount = 0;
-
+        const { minePositions, revealedTiles, mineCount } = bet.gameData;
         const user = await userModel.findById(userId);
-        if (status === "win") {
-            const safeTiles = 25 - bet.gameData.mineCount;
-            const safeRevealed = revealedTiles.filter(i => !bet.gameData.minePositions.includes(i)).length;
+
+        const hitMine = revealedTiles.some(tile => minePositions.includes(tile));
+        let winAmount = 0;
+        let isWin = false;
+
+        if (!hitMine) {
+            const safeTiles = 25 - mineCount;
+            const safeRevealed = revealedTiles.length;
 
             let probability = 1;
             for (let i = 0; i < safeRevealed; i++) {
                 probability *= (safeTiles - i) / (25 - i);
             }
+
             const multiplier = Number(((1 / probability) * 0.99).toFixed(2));
             winAmount = Number((bet.betAmount * multiplier).toFixed(2));
 
             user.wallet += winAmount;
             await user.save();
 
-            bet.isWin = true;
-            bet.winAmount = winAmount;
-        } else {
-            bet.isWin = false;
-            bet.winAmount = 0;
+            isWin = true;
         }
 
+        bet.status = "completed";
+        bet.isWin = isWin;
+        bet.winAmount = winAmount;
         await bet.save();
-        res.status(200).json({ message: "Game ended", wallet: user.wallet, bet });
+
+        res.status(200).json({
+            message: "Game ended",
+            wallet: user.wallet,
+            bet
+        });
+
     } catch (err) {
         console.error("endMinesGame error:", err);
         res.status(500).json({ message: "Error ending game" });

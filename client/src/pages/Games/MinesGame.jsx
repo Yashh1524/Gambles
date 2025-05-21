@@ -176,7 +176,7 @@ const MinesGame = () => {
         if (!betId) return toast.error("Bet ID missing");
         try {
             const { data } = await api.post("/api/games/mines/end-mine", {
-                betId, status: won ? "win" : "lose", revealedTiles
+                betId
             });
             console.log(data);
             if(won) {
