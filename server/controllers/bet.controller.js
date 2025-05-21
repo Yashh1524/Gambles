@@ -160,3 +160,52 @@ export const getUserTotalWinningAmountAndWinningStreak = async (req, res) => {
         });
     }
 };
+
+export const getUserTotalWinningAmountAndWinningStreakByGame = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const { gameId } = req.body
+        
+        const bets = await betModel
+            .find({ user: userId, status: "completed", game: gameId })
+            .sort({ createdAt: -1 });
+
+        let totalWinningAmount = 0;
+        let totalWinningStreak = 0;
+
+        let calculatingStreak = true;
+        for (const bet of bets) {
+            if (bet.isWin) {
+                totalWinningAmount += (bet.winAmount - bet.betAmount);
+                if (calculatingStreak) totalWinningStreak += 1;
+            } else {
+                totalWinningAmount -= bet.betAmount;
+                calculatingStreak = false; // break streak count
+            }
+        }
+
+        // for (const bet of bets) {
+        //     console.log(bet)
+        //     if (bet.isWin) totalWinningAmount += bet.winAmount;
+        //     else totalWinningAmount -= bet.betAmount;
+        // }
+
+        // for (const bet of bets) {
+        //     if (bet.isWin) totalWinningStreak += 1;
+        //     else break;
+        // }
+
+        return res.status(200).json({
+            totalWinningAmount,
+            totalWinningStreak,
+            success: true,
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Error retrieving user stats",
+            error: error.message,
+        });
+    }
+};
