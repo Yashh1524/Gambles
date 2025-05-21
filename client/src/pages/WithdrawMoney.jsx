@@ -2,12 +2,12 @@ import React, { useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { ImSpinner2 } from 'react-icons/im';
 
 const WithdrawMoney = () => {
-    const { user, setUser } = useUser();
+    const { setUser } = useUser();
     const [form, setForm] = useState({
         amount: '',
         accountHolderName: '',
@@ -20,14 +20,14 @@ const WithdrawMoney = () => {
     const [showSuccess, setShowSuccess] = useState(false);
     const [isFailed, setIsFailed] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const handleCreatePayout = async () => {
-        const { amount, accountHolderName, accountNumber, ifscCode, upiId } = form;
+        const { amount, accountHolderName, accountNumber, ifscCode } = form;
 
         if (!amount || parseFloat(amount) > 500000) {
             return toast.error("Please enter an amount up to ₹5,00,000");
@@ -49,7 +49,7 @@ const WithdrawMoney = () => {
             setUser((prev) => ({ ...prev, wallet: res.data.wallet }));
             setShowSuccess(true);
 
-            setTimeout(() => navigate("/"), 2500);
+            // setTimeout(() => navigate("/"), 2500);
         } catch (err) {
             console.error(err);
             toast.error(err.response?.data?.message || "Withdrawal failed");
@@ -66,7 +66,7 @@ const WithdrawMoney = () => {
                 }
             }
 
-            setTimeout(() => navigate("/"), 2500);
+            // setTimeout(() => navigate("/"), 2500);
         } finally {
             setIsLoading(false);
         }
@@ -103,17 +103,6 @@ const WithdrawMoney = () => {
                     </div>
 
                     <div className="bg-[#1A2C38] p-4 rounded-xl space-y-4">
-                        <InputField
-                            label="UPI ID (optional)"
-                            name="upiId"
-                            value={form.upiId}
-                            onChange={handleChange}
-                            placeholder="example@upi"
-                            disabled={isLoading}
-                        />
-
-                        <div className="text-center text-sm text-gray-400">OR</div>
-
                         <InputField
                             label="Account Holder Name"
                             name="accountHolderName"

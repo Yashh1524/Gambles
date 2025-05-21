@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useUser } from '../contexts/UserContext';
 import { toast } from 'react-hot-toast';
 import api from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 import { ImSpinner2 } from 'react-icons/im';
 
@@ -12,7 +12,7 @@ const DepositMoney = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showSuccess, setShowSuccess] = useState(false);
     const [showFailure, setShowFailure] = useState(false);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleDeposit = async () => {
         if (!amount || isNaN(amount) || Number(amount) <= 0 || Number(amount) > 500000) {
@@ -44,12 +44,12 @@ const DepositMoney = () => {
                         toast.success("Deposit successful");
                         setUser(prev => ({ ...prev, wallet: data.wallet }));
                         setShowSuccess(true);
-                        setTimeout(() => navigate("/"), 2500);
+                        // setTimeout(() => navigate("/"), 2500);
                     } catch (verifyErr) {
                         console.error("Verification error", verifyErr);
                         toast.error("Deposit verification failed");
                         setShowFailure(true);
-                        setTimeout(() => navigate("/"), 2500);
+                        // setTimeout(() => navigate("/"), 2500);
                     }
                 },
                 prefill: {
@@ -61,7 +61,7 @@ const DepositMoney = () => {
                     ondismiss: () => {
                         setIsLoading(false);
                         setShowFailure(true);
-                        setTimeout(() => navigate("/"), 2500);
+                        // setTimeout(() => navigate("/"), 2500);
                     },
                 },
             };
@@ -72,7 +72,7 @@ const DepositMoney = () => {
             console.error(err);
             toast.error("Failed to initiate deposit");
             setShowFailure(true);
-            setTimeout(() => navigate("/"), 2500);
+            // setTimeout(() => navigate("/"), 2500);
         } finally {
             setIsLoading(false);
         }
