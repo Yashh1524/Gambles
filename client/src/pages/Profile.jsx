@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 const Profile = () => {
     const [totalWinAmount, setTotalWinAmount] = useState(0)
     const [totalWiningStreak, setTotalWiningStreak] = useState(0)
+    const [bets, setBets] = useState([])
 
     useEffect(() => {
         const getUserWiningData = async () => {
@@ -22,8 +23,24 @@ const Profile = () => {
             }
         }
 
+        const getUserAllBets = async () => {
+            try {
+                const response = await api.post("/api/bet/fetch-bets-by-user")
+                
+                if (response.data.success) {
+                    setBets(response.data.bets);
+                } else {
+                    toast.error("Failed to fetch bets");
+                }
+            } catch (error) {
+                toast.error(error?.response?.data?.message || "Failed to fetch bets");
+            }
+        }
+
+        getUserAllBets()
         getUserWiningData();
-    }, [])
+        console.log(bets)
+    }, [bets])
 
     return (
         <div>
