@@ -39,7 +39,7 @@ const Profile = () => {
 
         getUserAllBets()
         getUserWiningData();
-        console.log(bets)
+        // console.log(bets)
     }, [bets])
 
     return (

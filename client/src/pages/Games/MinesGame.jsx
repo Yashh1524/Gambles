@@ -115,7 +115,7 @@ const MinesGame = () => {
 
         try {
             const { data } = await api.post("/api/games/mines/start-mine", { amount, minesCount });
-            console.log(data)
+            // console.log(data)
             setBetId(data.bet);
             setGrid(Array(25).fill(null));
             setRevealedTiles([]);
@@ -178,7 +178,7 @@ const MinesGame = () => {
             const { data } = await api.post("/api/games/mines/end-mine", {
                 betId
             });
-            console.log(data);
+            // console.log(data);
             if(won) {
                 setTotalWin(totalWin + data.bet.winAmount - data.bet.betAmount)
                 setWinningStreak(winningStreak + 1)
