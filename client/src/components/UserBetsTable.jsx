@@ -52,9 +52,7 @@ export default function UserBetsTable({ bets = [] }) {
     const table = useReactTable({
         data: Array.isArray(bets) ? bets : [],
         columns,
-        state: {
-            pagination,
-        },
+        state: { pagination },
         onPaginationChange: setPagination,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
@@ -62,7 +60,7 @@ export default function UserBetsTable({ bets = [] }) {
 
     return (
         <div className="bg-[#1f2937] p-4 rounded-xl border border-gray-700 shadow-md">
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                 <h2 className="text-lg font-semibold text-white">Your Bet History</h2>
                 <div className="flex items-center gap-2">
                     <label className="text-sm text-gray-400">Show rows:</label>
@@ -78,8 +76,9 @@ export default function UserBetsTable({ bets = [] }) {
                 </div>
             </div>
 
-            <div className="overflow-x-auto rounded-xl">
-                <table className="min-w-full text-sm text-left text-white">
+            {/* Scrollable Table Wrapper */}
+            <div className="w-full overflow-x-auto rounded-xl">
+                <table className="w-full text-sm text-left text-white">
                     <thead className="bg-gray-800 text-gray-400">
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>

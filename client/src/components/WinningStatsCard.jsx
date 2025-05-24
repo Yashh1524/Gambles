@@ -33,36 +33,27 @@ export default function WinningStatsCard() {
     const totalBets = totalWins + totalLose;
     const winRate = totalBets > 0 ? ((totalWins / totalBets) * 100).toFixed(2) : '0.00';
 
+    const StatCard = ({ label, value, color }) => (
+        <div className="bg-[#111827] p-4 rounded-lg shadow border border-gray-700 flex flex-col justify-between">
+            <h3 className="text-gray-400 text-sm md:text-base">{label}</h3>
+            <p className={`text-xl md:text-2xl font-semibold ${color || 'text-white'}`}>{value}</p>
+        </div>
+    );
+
     return (
-        <div className="bg-[#1f2937] shadow-md p-4 rounded-xl border border-gray-700 text-white">
-            <h2 className="text-lg font-bold mb-4">Your Stats</h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm md:text-base">
-                <div>
-                    <h3 className="text-gray-400">Total Win</h3>
-                    <p className={`text-xl font-bold ${totalWinningAmount >= 0 ? 'text-green-400' : 'text-red-500'}`}>
-                        ₹{totalWinningAmount.toFixed(2)}
-                    </p>
-                </div>
-                <div>
-                    <h3 className="text-gray-400">Winning Streak</h3>
-                    <p className="text-xl font-bold text-blue-400">{totalWinningStreak}</p>
-                </div>
-                <div>
-                    <h3 className="text-gray-400">Total Wagered</h3>
-                    <p className="text-xl font-bold text-yellow-400">₹{totalWageredAmount.toLocaleString()}</p>
-                </div>
-                <div>
-                    <h3 className="text-gray-400">Total Wins</h3>
-                    <p className="text-xl font-bold text-green-400">{totalWins}</p>
-                </div>
-                <div>
-                    <h3 className="text-gray-400">Total Losses</h3>
-                    <p className="text-xl font-bold text-red-400">{totalLose}</p>
-                </div>
-                <div>
-                    <h3 className="text-gray-400">Win Rate</h3>
-                    <p className="text-xl font-bold text-purple-400">{winRate}%</p>
-                </div>
+        <div className="bg-[#1f2937] shadow-lg p-5 rounded-2xl border border-gray-700 text-white w-full mx-auto">
+            <h2 className="text-lg md:text-xl font-bold mb-6">Your Stats</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                <StatCard
+                    label="Total Win"
+                    value={`₹${totalWinningAmount.toFixed(2)}`}
+                    color={totalWinningAmount >= 0 ? 'text-green-400' : 'text-red-500'}
+                />
+                <StatCard label="Winning Streak" value={totalWinningStreak} color="text-blue-400" />
+                <StatCard label="Total Wagered" value={`₹${totalWageredAmount.toLocaleString()}`} color="text-yellow-400" />
+                <StatCard label="Total Wins" value={totalWins} color="text-green-400" />
+                <StatCard label="Total Losses" value={totalLose} color="text-red-400" />
+                <StatCard label="Win Rate" value={`${winRate}%`} color="text-purple-400" />
             </div>
         </div>
     );

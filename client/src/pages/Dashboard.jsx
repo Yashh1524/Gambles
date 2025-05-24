@@ -24,7 +24,7 @@ export default function Dashboard() {
     }, []);
 
     return (
-        <div className="p-6 space-y-6 text-white bg-[#111827] min-h-screen">
+        <div className="p-6 space-y-6 text-white bg-[#111827] min-h-screen w-screen lg:w-full">
             {/* <h1 className="text-2xl font-bold text-white">Your Profile</h1> */}
             <WinningStatsCard />
             {loading ? (
