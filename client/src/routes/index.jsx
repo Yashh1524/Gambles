@@ -14,6 +14,7 @@ import DepositMoney from "@/pages/DepositMoney.jsx";
 import WithdrawMoney from "@/pages/WithdrawMoney.jsx";
 import Games from "@/pages/Games.jsx";
 import MinesGame from "@/pages/Games/MinesGame.jsx";
+import Dashboard from "@/pages/Dashboard.jsx";
 
 const router = createBrowserRouter([
     {
@@ -42,6 +43,7 @@ const router = createBrowserRouter([
             { path: "set-new-password", element: <SetNewPassword /> },
             { path: "oauth-success", element: <OauthSuccess /> },
             { path: "profile", element: <Profile /> },
+            { path: "dashboard", element: <Dashboard /> },
             { path: "deposit-money", element: <DepositMoney /> },
             { path: "withdraw-money", element: <WithdrawMoney /> },
             { path: "games", element: <Games /> },

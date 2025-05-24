@@ -123,13 +123,20 @@ export const getUserTotalWinningAmountAndWinningStreak = async (req, res) => {
 
         let totalWinningAmount = 0;
         let totalWinningStreak = 0;
+        let totalWageredAmount = 0;
+        let totalWins = 0;
+        let totalLose = 0;
 
         let calculatingStreak = true;
         for (const bet of bets) {
+            totalWageredAmount += bet.betAmount;
+
             if (bet.isWin) {
+                totalWins += 1
                 totalWinningAmount += (bet.winAmount - bet.betAmount);
                 if (calculatingStreak) totalWinningStreak += 1;
             } else {
+                totalLose += 1
                 totalWinningAmount -= bet.betAmount;
                 calculatingStreak = false; // break streak count
             }
@@ -149,6 +156,9 @@ export const getUserTotalWinningAmountAndWinningStreak = async (req, res) => {
         return res.status(200).json({
             totalWinningAmount,
             totalWinningStreak,
+            totalWageredAmount,
+            totalWins,
+            totalLose,
             success: true,
         });
 
@@ -172,13 +182,20 @@ export const getUserTotalWinningAmountAndWinningStreakByGame = async (req, res) 
 
         let totalWinningAmount = 0;
         let totalWinningStreak = 0;
+        let totalWageredAmount = 0;
+        let totalWins = 0;
+        let totalLose = 0;
 
         let calculatingStreak = true;
         for (const bet of bets) {
+            totalWageredAmount += bet.betAmount;
+
             if (bet.isWin) {
+                totalWins += 1
                 totalWinningAmount += (bet.winAmount - bet.betAmount);
                 if (calculatingStreak) totalWinningStreak += 1;
             } else {
+                totalLose += 1
                 totalWinningAmount -= bet.betAmount;
                 calculatingStreak = false; // break streak count
             }
@@ -198,6 +215,9 @@ export const getUserTotalWinningAmountAndWinningStreakByGame = async (req, res) 
         return res.status(200).json({
             totalWinningAmount,
             totalWinningStreak,
+            totalWageredAmount,
+            totalWins,
+            totalLose,
             success: true,
         });
 

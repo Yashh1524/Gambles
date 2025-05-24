@@ -8,7 +8,8 @@ import {
     Menu,
     LogOut,
     Home,
-    Gamepad
+    Gamepad,
+    LayoutDashboard
 } from "lucide-react";
 import { useUser } from "../contexts/UserContext";
 import { useNavigate } from "react-router-dom";
@@ -63,15 +64,26 @@ export default function Sidebar() {
                 </div>
 
                 {user && (
-                    <div
-                        onClick={() => navigate("/profile")}
-                        className={menuItemClass}
-                    >
-                        <User className="w-5 h-5 shrink-0" />
-                        {isDesktopOpen && (
-                            <span className="text-sm font-medium">Profile</span>
-                        )}
-                    </div>
+                    <>
+                        <div
+                            onClick={() => navigate("/profile")}
+                            className={menuItemClass}
+                        >
+                            <User className="w-5 h-5 shrink-0" />
+                            {isDesktopOpen && (
+                                <span className="text-sm font-medium">Profile</span>
+                            )}
+                        </div>
+                        <div
+                            onClick={() => navigate("/dashboard")}
+                            className={menuItemClass}
+                        >
+                            <LayoutDashboard className="w-5 h-5 shrink-0" />
+                            {isDesktopOpen && (
+                                <span className="text-sm font-medium">Dashboard</span>
+                            )}
+                        </div>
+                    </>
                 )}
 
                 <div

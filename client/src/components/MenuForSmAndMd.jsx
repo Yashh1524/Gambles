@@ -7,7 +7,8 @@ import {
     Gamepad,
     LogIn,
     UserPlus,
-    LogOut
+    LogOut,
+    LayoutDashboard
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "../contexts/UserContext";
@@ -34,6 +35,7 @@ function MenuForSmAndMd({ isOpen, setIsOpen }) {
             }
         } catch (err) {
             toast.error("Logout failed");
+            console.error(err)
         }
     };
 
@@ -69,13 +71,22 @@ function MenuForSmAndMd({ isOpen, setIsOpen }) {
                     </button>
 
                     {user && (
-                        <button
-                            onClick={() => handleNavigate("/profile")}
-                            className="flex items-center gap-3 text-gray-300 hover:text-white"
-                        >
-                            <User className="w-5 h-5" />
-                            <span className="text-sm">Profile</span>
-                        </button>
+                        <>
+                            <button
+                                onClick={() => handleNavigate("/profile")}
+                                className="flex items-center gap-3 text-gray-300 hover:text-white"
+                            >
+                                <User className="w-5 h-5" />
+                                <span className="text-sm">Profile</span>
+                            </button>
+                            <button
+                                onClick={() => handleNavigate("/dashboard")}
+                                className="flex items-center gap-3 text-gray-300 hover:text-white"
+                            >
+                                <LayoutDashboard className="w-5 h-5" />
+                                <span className="text-sm">Dashboard</span>
+                            </button>
+                        </>
                     )}
                 </nav>
 
@@ -106,7 +117,7 @@ function MenuForSmAndMd({ isOpen, setIsOpen }) {
                                     className="bg-[#1447E6] w-full flex items-center justify-start px-4 py-2 rounded text-white cursor-pointer gap-2"
                                 >
                                     <FaUserClock size={20} />
-                                    {isDesktopOpen && <span className="font-medium">Verify Account</span>}
+                                    <span className="font-medium">Verify Account</span>
                                 </button>
                             )
                         }
