@@ -1,53 +1,37 @@
-import api from '@/utils/api'
-import React, { useEffect, useState } from 'react'
-import toast from 'react-hot-toast'
+'use client';
+import React, { useEffect, useState } from 'react';
+import UserBetsTable from '@/components/UserBetsTable';
+import WinningStatsCard from '@/components/WinningStatsCard';
+import api from '@/utils/api';
 
-const Profile = () => {
-    const [totalWinAmount, setTotalWinAmount] = useState(0)
-    const [totalWiningStreak, setTotalWiningStreak] = useState(0)
-    const [bets, setBets] = useState([])
+export default function Profile() {
+    const [bets, setBets] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const getUserWiningData = async () => {
+        const fetchBets = async () => {
             try {
-                const response = await api.get("/api/bet/get-user-totalwin-and-winningstreak");
-
-                if (response.data.success) {
-                    setTotalWinAmount(response.data.totalWinningAmount);
-                    setTotalWiningStreak(response.data.totalWinningStreak);
-                } else {
-                    toast.error("Failed to fetch winning data");
-                }
-            } catch (error) {
-                toast.error(error?.response?.data?.message || "Failed to fetch winning data");
+                const { data } = await api.get('/api/bet/fetch-bets-by-user');
+                setBets(data.data || []);
+            } catch (err) {
+                console.error('Error fetching bets', err);
+            } finally {
+                setLoading(false);
             }
-        }
+        };
 
-        const getUserAllBets = async () => {
-            try {
-                const response = await api.post("/api/bet/fetch-bets-by-user")
-                
-                if (response.data.success) {
-                    setBets(response.data.bets);
-                } else {
-                    toast.error("Failed to fetch bets");
-                }
-            } catch (error) {
-                toast.error(error?.response?.data?.message || "Failed to fetch bets");
-            }
-        }
-
-        getUserAllBets()
-        getUserWiningData();
-        // console.log(bets)
-    }, [bets])
+        fetchBets();
+    }, []);
 
     return (
-        <div>
-            <h1>Total Winning Amount: ₹{totalWinAmount}</h1>
-            <h1>Winning Streak: {totalWiningStreak}</h1>
+        <div className="p-6 space-y-6 text-white bg-[#111827] min-h-screen">
+            <h1 className="text-2xl font-bold text-white">Your Profile</h1>
+            <WinningStatsCard />
+            {loading ? (
+                <div>Loading bets...</div>
+            ) : (
+                <UserBetsTable bets={bets} />
+            )}
         </div>
-    )
+    );
 }
-
-export default Profile;

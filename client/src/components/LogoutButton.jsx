@@ -1,11 +1,11 @@
 // components/LogoutButton.jsx
 import React from 'react';
 import api from '../utils/api';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
 const LogoutButton = ({ onLogout }) => {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const handleLogout = async () => {
         try {
