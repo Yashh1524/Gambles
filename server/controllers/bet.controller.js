@@ -65,9 +65,11 @@ export const getUserBetsController = async (req, res) => {
 export const getUserBetsByGameController = async (req, res) => {
     try {
         const userId = req.user.id;
-        const { gameType } = req.body;
+        const { gameId } = req.query;
 
-        const bets = await betModel.find({ user: userId, gameType });
+        const bets = await betModel
+            .find({ user: userId, game: gameId })
+            .sort({ createdAt: -1 });
 
         res.status(200).json({
             success: true,
