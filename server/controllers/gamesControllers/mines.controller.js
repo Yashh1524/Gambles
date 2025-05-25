@@ -62,9 +62,12 @@ export const revealTile = async (req, res) => {
         const remainingMines = bet.gameData.mineCount - (bet.gameData.mineHits || 0);
 
         const chanceOfMine = remainingMines / remainingTiles;
-        const isMine = Math.random() <= chanceOfMine;
-        // console.log("chanceOfMine:", chanceOfMine)
-        // console.log("isMine:", isMine)
+        // const isMine = Math.random() <= chanceOfMine; //100% fair
+        const houseEdge = 0.99; // 1% house edge — tweak this if needed (e.g., 0.98 for 2%)
+        const isMine = Math.random() <= (chanceOfMine * (1 / houseEdge));
+
+        console.log("chanceOfMine:", chanceOfMine)
+        console.log("isMine:", isMine)
 
         bet.gameData.revealedTiles.push(tileIndex);
         if (isMine) {
