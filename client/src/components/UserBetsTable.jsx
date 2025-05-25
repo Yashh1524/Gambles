@@ -7,6 +7,7 @@ import {
     flexRender,
     createColumnHelper,
 } from '@tanstack/react-table';
+import WinningStatsCard from './WinningStatsCard';
 
 const columnHelper = createColumnHelper();
 
@@ -67,7 +68,7 @@ export default function UserBetsTable({ bets = [] }) {
     });
 
     return (
-        <div className="bg-[#1f2937] p-4 rounded-xl border border-gray-700 shadow-md">
+        <div className="bg-[#0F212E] p-4 rounded-xl border border-gray-900 shadow-md">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
                 <h2 className="text-lg font-semibold text-white">Your Bet History</h2>
                 <div className="flex items-center gap-2">
@@ -87,7 +88,7 @@ export default function UserBetsTable({ bets = [] }) {
             {/* Scrollable Table Wrapper */}
             <div className="w-full overflow-x-auto rounded-xl">
                 <table className="w-full text-sm text-left text-white">
-                    <thead className="bg-gray-800 text-gray-400">
+                    <thead className="bg-[#1A2934] text-gray-400">
                         {table.getHeaderGroups().map(headerGroup => (
                             <tr key={headerGroup.id}>
                                 {headerGroup.headers.map(header => (
@@ -98,9 +99,9 @@ export default function UserBetsTable({ bets = [] }) {
                             </tr>
                         ))}
                     </thead>
-                    <tbody>
+                    <tbody className='bg-[#1A2934]'>
                         {table.getRowModel().rows.map(row => (
-                            <tr key={row.id} className="border-b border-gray-700 hover:bg-gray-800 transition">
+                            <tr key={row.id} className="border-b border-gray-700 hover:bg-[#1A2C38] transition">
                                 {row.getVisibleCells().map(cell => (
                                     <td key={cell.id} className="px-4 py-2 whitespace-nowrap">
                                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
