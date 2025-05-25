@@ -278,27 +278,65 @@ const MinesGame = () => {
                                     }
                                 </div>
                             </div>
-                            <label className="block mb-2 text-sm text-gray-300">Bet Amount (₹)</label>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    type="number"
-                                    className="flex-1 p-2.5 rounded-md bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
-                                    value={amount === 0 ? '' : amount}
-                                    onChange={(e) => setAmount(Number(e.target.value))}
-                                    onWheel={(e) => e.target.blur()} // Disable scroll change
-                                    placeholder="Enter amount"
-                                    disabled={isGameStarted}
-                                />
+                            <div className="space-y-2">
+                                <label className="block text-sm text-gray-300">Bet Amount (₹)</label>
+                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                    <input
+                                        type="number"
+                                        step="0.01"
+                                        className="flex-1 p-2.5 rounded-md bg-[#1e3a4c] text-white border border-[#2a4a5c] focus:outline-none focus:ring-2 focus:ring-green-400"
+                                        value={amount === 0 ? '' : amount}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+                                            setAmount(value === '' ? 0 : Number(value));
+                                        }}
+                                        onBlur={() => {
+                                            setAmount((prev) => Number(Number(prev).toFixed(2)));
+                                        }}
+                                        onWheel={(e) => e.target.blur()} // Disable scroll change
+                                        placeholder="Enter amount"
+                                        disabled={isGameStarted}
+                                    />
 
-                                <button
-                                    type="button"
-                                    disabled={isGameStarted}
-                                    onClick={() => setAmount(user.wallet)}
-                                    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-4 py-2 rounded-md transition-all disabled:opacity-50"
-                                >
-                                    Max
-                                </button>
+                                    <div className="flex gap-2">
+                                        <button
+                                            type="button"
+                                            disabled={isGameStarted}
+                                            onClick={() => {
+                                                const halved = amount / 2;
+                                                setAmount(Number(halved.toFixed(2)));
+                                            }}
+                                            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-2 py-2 rounded-md transition-all disabled:opacity-50 text-sm"
+                                        >
+                                            1/2
+                                        </button>
+
+<button
+    type="button"
+    disabled={isGameStarted}
+    onClick={() => {
+        const doubled = amount * 2;
+        const finalAmount = doubled > user.wallet ? user.wallet : doubled;
+        setAmount(Number(finalAmount.toFixed(2)));
+    }}
+    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-3 py-2 rounded-md transition-all disabled:opacity-50 text-sm"
+>
+    2x
+</button>
+
+
+                                        <button
+                                            type="button"
+                                            disabled={isGameStarted}
+                                            onClick={() => setAmount(Number(user.wallet.toFixed(2)))}
+                                            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-2 py-2 rounded-md transition-all disabled:opacity-50 text-sm"
+                                        >
+                                            Max
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
+
                         </div>
 
                         <div className="mb-4">
