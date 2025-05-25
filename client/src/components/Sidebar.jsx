@@ -62,6 +62,16 @@ export default function Sidebar() {
                         <span className="text-sm font-medium">Home</span>
                     )}
                 </div>
+                
+                <div
+                    onClick={() => navigate("/games")}
+                    className={menuItemClass}
+                >
+                    <Gamepad className="w-5 h-5 shrink-0" />
+                    {isDesktopOpen && (
+                        <span className="text-sm font-medium">Games</span>
+                    )}
+                </div>
 
                 {user && (
                     <>
@@ -85,16 +95,6 @@ export default function Sidebar() {
                         </div>
                     </>
                 )}
-
-                <div
-                    onClick={() => navigate("/games")}
-                    className={menuItemClass}
-                >
-                    <Gamepad className="w-5 h-5 shrink-0" />
-                    {isDesktopOpen && (
-                        <span className="text-sm font-medium">Games</span>
-                    )}
-                </div>
 
                 {/* Auth Buttons */}
                 {!user ? (
