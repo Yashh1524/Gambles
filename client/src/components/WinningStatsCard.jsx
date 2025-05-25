@@ -46,7 +46,7 @@ export default function WinningStatsCard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 <StatCard
                     label="Total Win"
-                    value={`₹${totalWinningAmount.toFixed(2)}`}
+                    value={`₹${totalWinningAmount.toLocaleString()}`}
                     color={totalWinningAmount >= 0 ? 'text-green-400' : 'text-red-500'}
                 />
                 <StatCard label="Winning Streak" value={totalWinningStreak} color="text-blue-400" />

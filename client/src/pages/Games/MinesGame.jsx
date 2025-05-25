@@ -215,7 +215,7 @@ const MinesGame = () => {
                                             <ImSpinner2 className="animate-spin text-green-400" />
                                         </div>
                                     ) : (
-                                        <p className={`text-lg font-bold ${totalWin > 0 ? "text-green-400" : "text-red-500"}`}>₹{totalWin}</p>
+                                        <p className={`text-lg font-bold ${totalWin > 0 ? "text-green-400" : "text-red-500"}`}>₹{totalWin.toFixed(2)}</p>
                                     )
                                 }
                             </div>

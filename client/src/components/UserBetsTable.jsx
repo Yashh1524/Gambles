@@ -17,8 +17,16 @@ const columns = [
     }),
     columnHelper.accessor('winAmount', {
         header: 'Win Amount',
-        cell: info => `₹${info.getValue().toLocaleString()}`,
+        cell: info => {
+            const value = info.getValue();
+            return (
+                <span className={`${value === 0 ? "text-red-500" : "text-green-500"}`}>
+                    ₹{value.toLocaleString()}
+                </span>
+            );
+        },
     }),
+
     columnHelper.accessor(row => {
         if (row.winAmount > 0 && row.betAmount > 0) {
             return (row.winAmount / row.betAmount).toFixed(2);
