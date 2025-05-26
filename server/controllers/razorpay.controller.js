@@ -56,6 +56,8 @@ export const createDepositOrderController = async (req, res) => {
 };
 
 export const verifyDepositPaymentController = async (req, res) => {
+    let transaction = null;
+
     try {
         const {
             razorpay_order_id,
@@ -67,7 +69,7 @@ export const verifyDepositPaymentController = async (req, res) => {
         const userId = req.user.id;
 
         // Step 1: Find the corresponding transaction
-        const transaction = await transactionModel.findOne({
+        transaction = await transactionModel.findOne({
             user: userId,
             razorpayOrderId: razorpay_order_id,
             type: "DEPOSIT",
@@ -116,6 +118,17 @@ export const verifyDepositPaymentController = async (req, res) => {
 
     } catch (error) {
         console.error("Verify Deposit Payment Error:", error.message || error);
+
+        // Attempt to mark the transaction as FAILED if it exists and is still pending
+        if (transaction && transaction.status === "PENDING") {
+            try {
+                transaction.status = "FAILED";
+                await transaction.save();
+            } catch (innerErr) {
+                console.error("Failed to mark transaction as FAILED in catch block:", innerErr);
+            }
+        }
+
         return res.status(500).json({ success: false, message: "Failed to verify payment." });
     }
 };

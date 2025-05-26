@@ -20,10 +20,14 @@ const DepositMoney = () => {
         }
 
         setIsLoading(true);
+        let transactionId = null;
+
         try {
             const { data: orderData } = await api.post("/api/razorpay/create-deposit-order", {
                 amount: Number(amount)
             });
+
+            transactionId = orderData.transactionId;
 
             const options = {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
@@ -44,12 +48,11 @@ const DepositMoney = () => {
                         toast.success("Deposit successful");
                         setUser(prev => ({ ...prev, wallet: data.wallet }));
                         setShowSuccess(true);
-                        // setTimeout(() => navigate("/"), 2500);
                     } catch (verifyErr) {
                         console.error("Verification error", verifyErr);
                         toast.error("Deposit verification failed");
+                        await updateTransactionStatus(transactionId, "FAILED");
                         setShowFailure(true);
-                        // setTimeout(() => navigate("/"), 2500);
                     }
                 },
                 prefill: {
@@ -58,10 +61,10 @@ const DepositMoney = () => {
                 },
                 theme: { color: "#0083ff" },
                 modal: {
-                    ondismiss: () => {
+                    ondismiss: async () => {
                         setIsLoading(false);
+                        await updateTransactionStatus(transactionId, "FAILED");
                         setShowFailure(true);
-                        // setTimeout(() => navigate("/"), 2500);
                     },
                 },
             };
@@ -69,12 +72,27 @@ const DepositMoney = () => {
             const razor = new window.Razorpay(options);
             razor.open();
         } catch (err) {
-            console.error(err);
+            console.error("Error initiating Razorpay order:", err);
             toast.error("Failed to initiate deposit");
+            if (transactionId) {
+                await updateTransactionStatus(transactionId, "FAILED");
+            }
             setShowFailure(true);
-            // setTimeout(() => navigate("/"), 2500);
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    // helper function to update status
+    const updateTransactionStatus = async (transactionId, status) => {
+        if (!transactionId || !status) return;
+        try {
+            await api.post("/api/transaction/update-transaction-status", {
+                transactionId,
+                status
+            });
+        } catch (err) {
+            console.error("Failed to update transaction status:", err);
         }
     };
 
@@ -97,7 +115,7 @@ const DepositMoney = () => {
             ) : (
                 <div className="bg-[#132631] p-10 rounded-2xl shadow-xl w-full max-w-md">
                     <h1 className="text-3xl font-bold mb-6 text-center">Deposit Funds</h1>
-                    
+
                     <label className="text-sm mb-2 block text-gray-300">Enter Amount (INR)</label>
                     <input
                         type="number"

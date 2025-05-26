@@ -113,12 +113,27 @@ export const updateTransactionStatusController = async (req, res) => {
 
     } catch (error) {
         console.error("Error updating transaction status:", error);
+
+        // Attempt to mark the transaction as FAILED if possible
+        if (req.body.transactionId) {
+            try {
+                const transaction = await transactionModel.findById(req.body.transactionId);
+                if (transaction && transaction.status === "PENDING") {
+                    transaction.status = "FAILED";
+                    await transaction.save();
+                }
+            } catch (innerErr) {
+                console.error("Error marking transaction as FAILED:", innerErr);
+            }
+        }
+
         return res.status(500).json({
             success: false,
             message: "An error occurred while updating the transaction status."
         });
     }
 };
+
 
 export const getAllTransactionByUserId = async (req, res) => {
     const userId = req.user.id;
