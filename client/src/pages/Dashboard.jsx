@@ -12,6 +12,10 @@ export default function Dashboard() {
         const fetchBets = async () => {
             try {
                 const { data } = await api.get('/api/bet/fetch-bets-by-user');
+                // console.log(data)
+                if(!data.success) {
+                    console.error("Failed fetching bets")
+                }
                 setBets(data.data || []);
             } catch (err) {
                 console.error('Error fetching bets', err);

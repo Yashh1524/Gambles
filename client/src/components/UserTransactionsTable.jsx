@@ -7,44 +7,44 @@ import {
     flexRender,
     createColumnHelper,
 } from '@tanstack/react-table';
-import WinningStatsCard from './WinningStatsCard';
 
 const columnHelper = createColumnHelper();
 
 const columns = [
-    columnHelper.accessor('betAmount', {
-        header: 'Bet Amount',
+    columnHelper.accessor('amount', {
+        header: 'Amount',
         cell: info => `₹${info.getValue().toLocaleString()}`,
     }),
-    columnHelper.accessor('winAmount', {
-        header: 'Win Amount',
+    columnHelper.accessor('type', {
+        header: 'Type',
+        cell: info => (
+            <span className={`font-semibold ${info.getValue() === 'DEPOSIT' ? 'text-blue-400' : 'text-yellow-400'}`}>
+                {info.getValue().charAt(0).toUpperCase() + info.getValue().slice(1).toLowerCase()}
+            </span>
+        ),
+    }),
+    columnHelper.accessor('status', {
+        header: 'Status',
         cell: info => {
             const value = info.getValue();
+            const color =
+                value === 'SUCCESS' ? 'text-green-500' :
+                value === 'FAILED' ? 'text-red-500' :
+                'text-yellow-400';
             return (
-                <span className={`${value === 0 ? "text-red-500" : "text-green-500"}`}>
-                    ₹{value.toLocaleString()}
+                <span className={`font-medium ${color}`}>
+                    {value.charAt(0).toUpperCase() + value.slice(1).toLowerCase()}
                 </span>
             );
         },
     }),
-
-    columnHelper.accessor(row => {
-        if (row.winAmount > 0 && row.betAmount > 0) {
-            return (row.winAmount / row.betAmount).toFixed(2);
-        }
-        return '0.00';
-    }, {
-        id: 'multiplier',
-        header: 'Multiplier',
-        cell: info => `${info.getValue()}x`,
+    columnHelper.accessor('razorpayOrderId', {
+        header: 'Order ID',
+        cell: info => <span className="text-sm text-gray-300">{info.getValue()}</span>,
     }),
-    columnHelper.accessor('status', {
-        header: 'Status',
-        cell: info => (
-            <span className={`font-medium ${info.getValue() === 'completed' ? 'text-green-400' : 'text-yellow-400'}`}>
-                {info.getValue().charAt(0).toUpperCase() + info.getValue().slice(1)}
-            </span>
-        ),
+    columnHelper.accessor('razorpayPaymentId', {
+        header: 'Payment ID',
+        cell: info => <span className="text-sm text-gray-300">{info.getValue()}</span>,
     }),
     columnHelper.accessor('createdAt', {
         header: 'Date',
@@ -52,14 +52,14 @@ const columns = [
     }),
 ];
 
-export default function UserBetsTable({ bets = [] }) {
+export default function UserTransactionsTable({ transactions = [] }) {
     const [pagination, setPagination] = useState({
         pageIndex: 0,
         pageSize: 10,
     });
 
     const table = useReactTable({
-        data: Array.isArray(bets) ? bets : [],
+        data: Array.isArray(transactions) ? transactions : [],
         columns,
         state: { pagination },
         onPaginationChange: setPagination,
@@ -70,7 +70,7 @@ export default function UserBetsTable({ bets = [] }) {
     return (
         <div className="bg-[#0F212E] p-4 rounded-xl border border-gray-900 shadow-md">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2">
-                <h2 className="text-lg font-semibold text-white">Your Bet History</h2>
+                <h2 className="text-lg font-semibold text-white">Your Transactions</h2>
                 <div className="flex items-center gap-2">
                     <label className="text-sm text-gray-400">Show rows:</label>
                     <select
@@ -85,7 +85,6 @@ export default function UserBetsTable({ bets = [] }) {
                 </div>
             </div>
 
-            {/* Scrollable Table Wrapper */}
             <div className="w-full overflow-x-auto rounded-xl">
                 <table className="w-full text-sm text-left text-white">
                     <thead className="bg-[#1A2934] text-gray-400">
@@ -99,7 +98,7 @@ export default function UserBetsTable({ bets = [] }) {
                             </tr>
                         ))}
                     </thead>
-                    <tbody className='bg-[#1A2934]'>
+                    <tbody className="bg-[#1A2934]">
                         {table.getRowModel().rows.map(row => (
                             <tr key={row.id} className="border-b border-gray-700 hover:bg-[#1A2C38] transition">
                                 {row.getVisibleCells().map(cell => (
@@ -112,11 +111,10 @@ export default function UserBetsTable({ bets = [] }) {
                     </tbody>
                 </table>
                 {table.getRowModel().rows.length === 0 && (
-                    <div className="text-center text-gray-400 py-6">No bets to display.</div>
+                    <div className="text-center text-gray-400 py-6">No transactions to display.</div>
                 )}
             </div>
 
-            {/* Pagination Controls */}
             <div className="flex flex-wrap justify-center sm:justify-between items-center gap-4 mt-4">
                 <div className="flex items-center gap-2">
                     <button
@@ -126,10 +124,8 @@ export default function UserBetsTable({ bets = [] }) {
                     >
                         Previous
                     </button>
-                    <span className="text-center text-white text-sm md:text-md flex flex-col md:flex-row">
-                        Page<span className='px-2'>
-                            {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                            </span>
+                    <span className="px-4 py-2 text-white text-sm md:text-md">
+                        Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
                     </span>
                     <button
                         onClick={() => table.nextPage()}

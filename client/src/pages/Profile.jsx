@@ -1,23 +1,56 @@
 'use client';
+import React, { useEffect, useState } from 'react';
+import UserTransactionsTable from '@/components/UserTransactionsTable';
 import { useUser } from '@/contexts/UserContext';
-import React from 'react';
+import api from '@/utils/api';
+import toast from 'react-hot-toast';
 
 export default function Profile() {
     const { user } = useUser();
+    const [transactions, setTransactions] = useState([]);
+    const [loadingTransactions, setLoadingTransactions] = useState(false);
+
+    useEffect(() => {
+        const fetchTransactions = async () => {
+            try {
+                setLoadingTransactions(true);
+                const response = await api.get("/api/transaction/get-all-transaction-by-user-id");
+                if (!response.data.success) {
+                    console.error("Failed fetching transactions");
+                    return;
+                }
+                setTransactions(response.data.data);
+            } catch (error) {
+                console.error('Error fetching transactions', error);
+                toast.error("Failed to fetch transactions.");
+            } finally {
+                setLoadingTransactions(false);
+            }
+        };
+
+        fetchTransactions();
+    }, []);
 
     if (!user) {
         return (
             <div className="min-h-screen bg-[#0f1b24] flex items-center justify-center text-white text-xl">
-                Loading profile...
+                Login to view profile
             </div>
         );
     }
 
+    const StatCard = ({ label, value, color }) => (
+        <div className="bg-[#1a2934] p-4 rounded-lg shadow flex flex-col justify-between">
+            <h3 className="text-gray-400 text-sm md:text-base">{label}</h3>
+            <p className={`text-lg md:text-2xl font-semibold ${color || 'text-white'}`}>{value}</p>
+        </div>
+    );
+
     return (
-        <div className="min-h-screen bg-[#0f1b24] py-10 px-4 text-white">
-            <div className="max-w-4xl mx-auto bg-[#132631] rounded-2xl shadow-lg p-6 md:p-10 space-y-8">
-                {/* Profile Header */}
-                <div className="flex flex-col md:flex-row items-center gap-6">
+        <div className="min-h-screen w-screen lg:w-full bg-[#0f1b24] py-10 lg:px-4 text-white">
+            {/* Profile Card */}
+            <div className="bg-[#0F212E] rounded-2xl shadow-lg p-6 md:p-10 mb-5 border border-gray-900">
+                <div className="flex flex-col md:flex-row items-center gap-6 mb-6">
                     <img
                         src={user?.picture}
                         alt="Profile Picture"
@@ -27,27 +60,39 @@ export default function Profile() {
                         <h1 className="text-2xl md:text-3xl font-bold">{user.name}</h1>
                         <p className="text-sm text-gray-400">{user.email}</p>
                         <p className="text-xs text-green-400 mt-1 capitalize">Signed in with: {user.provider}</p>
-                    </div>
-                </div>
-
-                {/* Stats */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="bg-[#1e3a4c] p-4 rounded-lg shadow-inner">
-                        <h3 className="text-sm text-gray-300">Wallet Balance</h3>
-                        <p className="text-xl font-bold text-green-400">₹{user.wallet.toLocaleString()}</p>
-                    </div>
-                    <div className="bg-[#1e3a4c] p-4 rounded-lg shadow-inner">
-                        <h3 className="text-sm text-gray-300">Account Verified</h3>
-                        <p className={`text-xl font-bold ${user.isVerified ? "text-green-400" : "text-red-500"}`}>
-                            {user.isVerified ? "Yes" : "No"}
+                        <p className="text-xs text-gray-500 mt-1">
+                            Member since: {new Date(user.createdAt).toLocaleDateString()}
                         </p>
                     </div>
                 </div>
 
-                {/* Timestamps */}
-                <div className="text-sm text-gray-500 text-center mt-4">
-                    Member since: {new Date(user.createdAt).toLocaleDateString()} <br />
+                {/* Stat Cards */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <StatCard
+                        label="Wallet Balance"
+                        value={`₹${user.wallet.toLocaleString()}`}
+                        color="text-green-400"
+                    />
+                    <StatCard
+                        label="Account Verified"
+                        value={user.isVerified ? "Yes" : "No"}
+                        color={user.isVerified ? "text-green-400" : "text-red-500"}
+                    />
+                    <StatCard
+                        label="User ID"
+                        value={user._id?.slice(-6).toUpperCase() || 'N/A'}
+                        color="text-blue-400"
+                    />
                 </div>
+            </div>
+
+            {/* Transactions Section */}
+            <div className="space-y-3 w-screen lg:w-full">
+                {loadingTransactions ? (
+                    <div className="text-gray-400">Loading transactions...</div>
+                ) : (
+                    <UserTransactionsTable transactions={transactions} />
+                )}
             </div>
         </div>
     );
