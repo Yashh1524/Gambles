@@ -311,18 +311,18 @@ const MinesGame = () => {
                                             1/2
                                         </button>
 
-<button
-    type="button"
-    disabled={isGameStarted}
-    onClick={() => {
-        const doubled = amount * 2;
-        const finalAmount = doubled > user.wallet ? user.wallet : doubled;
-        setAmount(Number(finalAmount.toFixed(2)));
-    }}
-    className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-3 py-2 rounded-md transition-all disabled:opacity-50 text-sm"
->
-    2x
-</button>
+                                        <button
+                                            type="button"
+                                            disabled={isGameStarted}
+                                            onClick={() => {
+                                                const doubled = amount * 2;
+                                                const finalAmount = doubled > user.wallet ? user.wallet : doubled;
+                                                setAmount(Number(finalAmount.toFixed(2)));
+                                            }}
+                                            className="bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white px-3 py-2 rounded-md transition-all disabled:opacity-50 text-sm"
+                                        >
+                                            2x
+                                        </button>
 
 
                                         <button
