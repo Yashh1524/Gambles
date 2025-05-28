@@ -2,26 +2,35 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../utils/api";
+import toast from "react-hot-toast";
+import { useUser } from "@/contexts/UserContext";
 
 const DiceGame = () => {
     const { state } = useLocation();
     const gameId = state?.gameId;
 
+    const { user, setUser } = useUser();
+    console.log(user)
+
     const [amount, setAmount] = useState(0);
     const [condition, setCondition] = useState("above");
     const [target, setTarget] = useState(50.5);
     const [result, setResult] = useState(null);
+    const [bet, setBet] = useState({})
     const [rollInProgress, setRollInProgress] = useState(false);
 
     const houseEdge = 0.01;
     const winChance = condition === "above" ? 100 - target : target;
-    const payoutMultiplier = ((100 - houseEdge) / winChance).toFixed(4);
+    const payoutMultiplier = Math.min(Math.max(((100 - houseEdge) / winChance), 1.0102), 49.5).toFixed(4);
 
     const handleSliderChange = (e) => {
         setTarget(parseFloat(e.target.value));
     };
 
     const handleBet = async () => {
+        if (!user) return toast.error("Please login to play game")
+        if (!user?.isVerified) return toast.error("Please verify account first.");
+        if (!amount || amount <= 0) return toast.error("Enter a valid amount");
         setRollInProgress(true);
         try {
             const res = await api.post("/api/games/dice/roll-dice", {
@@ -30,6 +39,9 @@ const DiceGame = () => {
                 condition,
                 gameId,
             });
+            console.log(res)
+            console.log(user.wallet)
+            setBet(res.data.bet)
             setResult(res.data.bet?.gameData?.diceRoll?.state?.result.toFixed(2));
         } catch (err) {
             console.error(err);
@@ -74,50 +86,48 @@ const DiceGame = () => {
                         ))}
                     </div>
 
-                    <div className="relative h-6 mt-2 rounded-full bg-[#243241]">
+                    <div className="relative h-6 mt-2 bg-[#243241] rounded-full overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-full flex">
+                            <div
+                                className={`h-full ${condition === "above" ? "bg-red-500" : "bg-green-500"}`}
+                                style={{ width: `${target}%` }}
+                            ></div>
+                            <div
+                                className={`h-full ${condition === "below" ? "bg-red-500" : "bg-green-500"}`}
+                                style={{ width: `${100 - target}%` }}
+                            ></div>
+                        </div>
+                    {/* 
                         <div
-                            className={`absolute top-0 left-0 h-6 ${condition === "below" ? "bg-green-500" : "bg-red-500"
-                                }`}
-                            style={{
-                                width: `${condition === "below" ? target : 100 - target}%`,
-                                borderTopLeftRadius: '9999px',
-                                borderBottomLeftRadius: '9999px',
-                                borderTopRightRadius: condition === "below" ? '0px' : '9999px',
-                                borderBottomRightRadius: condition === "below" ? '0px' : '9999px',
-                            }}
-                        ></div>
-                        <div
-                            className={`absolute top-0 h-6 ${condition === "below" ? "bg-red-500" : "bg-green-500"
-                                }`}
-                            style={{
-                                left: `${condition === "below" ? target : 0}%`,
-                                width: `${condition === "below" ? 100 - target : target}%`,
-                                borderTopRightRadius: '9999px',
-                                borderBottomRightRadius: '9999px',
-                                borderTopLeftRadius: condition === "below" ? '0px' : '9999px',
-                                borderBottomLeftRadius: condition === "below" ? '0px' : '9999px',
-                            }}
-                        ></div>
+                            className="absolute top-0 z-10 -translate-x-1/2"
+                            style={{ left: `${target}%` }}
+                        >
+                            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center shadow-lg z-50">
+                                <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
+                                <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
+                                <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
+                            </div>
+                        </div> 
+                        */}
 
                         <input
                             type="range"
-                            min="0.01"
-                            max="99.99"
+                            min="2"
+                            max="98"
                             step="0.01"
                             value={target}
                             onChange={handleSliderChange}
                             className="absolute top-0 w-full h-6 opacity-0 cursor-pointer"
                         />
-
-                        {result && (
-                            <div
-                                className="absolute -top-12 w-12 h-12 bg-white text-center text-red-500 rounded-md flex items-center justify-center text-sm"
-                                style={{ left: `calc(${result}% - 1.5rem)` }}
-                            >
-                                {result}
-                            </div>
-                        )}
                     </div>
+                    {result && (
+                        <div
+                            className="absolute -top-5 w-12 h-12 bg-white text-center text-red-500 rounded-md flex items-center justify-center text-sm"
+                            style={{ left: `calc(${parseFloat(result)}% - 1.5rem)` }}
+                        >
+                            {result}
+                        </div>
+                    )}
                 </div>
 
                 <div className="grid grid-cols-3 gap-4 text-center mt-8">
@@ -126,7 +136,7 @@ const DiceGame = () => {
                         <div className="mt-1 p-2 bg-gray-800 rounded">{payoutMultiplier}</div>
                     </div>
                     <div>
-                        <div className="text-xs text-white/60">Roll {condition === "above" ? "Under" : "Over"}</div>
+                        <div className="text-xs text-white/60">Roll {condition === "above" ? "Over" : "Under"}</div>
                         <div className="mt-1 p-2 bg-gray-800 rounded">{target}</div>
                     </div>
                     <div>
