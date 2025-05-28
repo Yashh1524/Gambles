@@ -34,13 +34,18 @@ export const rollDiceController = async (req, res) => {
 
         // Determine win or loss
         const isWin = condition === "above" ? rollResult > target : rollResult < target;
+        console.log("rollResult", rollResult)
+        console.log("target", target)
+        console.log("condition", condition)
+        console.log(isWin)
         const payout = isWin ? parseFloat((amount * payoutMultiplier).toFixed(8)) : 0;
 
-        // Credit payout if user won
+        // Update wallet based on win or loss
         if (isWin && payout > 0) {
             user.wallet += payout;
-            await user.save();
         }
+        await user.save();
+
 
         // Construct gameData without internal id
         const gameData = {
@@ -55,6 +60,7 @@ export const rollDiceController = async (req, res) => {
                 user: {
                     id: user._id,
                     name: user.name,
+                    wallet: user.wallet
                 },
                 state: {
                     result: rollResult,
@@ -71,6 +77,7 @@ export const rollDiceController = async (req, res) => {
             betAmount: amount,
             winAmount: payout,
             gameData,
+            isWin,
             status: "completed",
         });
 

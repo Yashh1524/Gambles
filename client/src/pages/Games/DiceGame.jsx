@@ -10,7 +10,7 @@ const DiceGame = () => {
     const gameId = state?.gameId;
 
     const { user, setUser } = useUser();
-    console.log(user)
+    // console.log(user)
 
     const [amount, setAmount] = useState(0);
     const [condition, setCondition] = useState("above");
@@ -40,8 +40,19 @@ const DiceGame = () => {
                 gameId,
             });
             console.log(res)
-            console.log(user.wallet)
+            // console.log(user.wallet)
             setBet(res.data.bet)
+            // console.log(bet.gameData.diceRoll.user.wallet)
+            // setUser(prev => ({ ...prev, wallet: bet.gameData.diceRoll.user.wallet }));
+            const updatedWallet = res.data.bet?.gameData?.diceRoll?.user?.wallet;
+
+if (typeof updatedWallet === "number") {
+    setUser(prev => ({
+        ...prev,
+        wallet: updatedWallet
+    }));
+}
+
             setResult(res.data.bet?.gameData?.diceRoll?.state?.result.toFixed(2));
         } catch (err) {
             console.error(err);
