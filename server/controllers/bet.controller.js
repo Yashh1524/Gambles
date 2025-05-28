@@ -49,7 +49,7 @@ export const getUserBetsController = async (req, res) => {
         const userId = req.user.id;
         const bets = await betModel
             .find({ user: userId })
-            .populate("game", "name")
+            .populate("game", "displayName")
             .sort({ createdAt: -1 });
 
         res.status(200).json({
@@ -72,6 +72,7 @@ export const getUserBetsByGameController = async (req, res) => {
 
         const bets = await betModel
             .find({ user: userId, game: gameId })
+            .populate("game", "displayName")
             .sort({ createdAt: -1 });
 
         res.status(200).json({

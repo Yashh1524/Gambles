@@ -12,12 +12,9 @@ import WinningStatsCard from './WinningStatsCard';
 const columnHelper = createColumnHelper();
 
 const columns = [
-    columnHelper.accessor('game.name', {
+    columnHelper.accessor('game.displayName', {
         header: 'Game',
-        cell: info => {
-            const name = info.getValue() || "Unknown";
-            return name.charAt(0).toUpperCase() + name.slice(1);
-        },
+        cell: info => info.getValue() || "Unknown",
     }),
     columnHelper.accessor('betAmount', {
         header: 'Bet Amount',
