@@ -15,6 +15,7 @@ import WithdrawMoney from "@/pages/WithdrawMoney.jsx";
 import Games from "@/pages/Games.jsx";
 import MinesGame from "@/pages/Games/MinesGame.jsx";
 import Dashboard from "@/pages/Dashboard.jsx";
+import DiceGame from "@/pages/Games/DiceGame.jsx";
 
 const router = createBrowserRouter([
     {
@@ -48,6 +49,7 @@ const router = createBrowserRouter([
             { path: "withdraw-money", element: <WithdrawMoney /> },
             { path: "games", element: <Games /> },
             { path: "games/mines", element: <MinesGame /> },
+            { path: "games/dice", element: <DiceGame /> },
         ],
     },
     { path: "verify-user", element: <VerifyEmail /> },

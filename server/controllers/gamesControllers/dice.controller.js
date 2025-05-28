@@ -32,7 +32,6 @@ export const rollDiceController = async (req, res) => {
         const rawPayout = 100 / winChance;
         const payoutMultiplier = parseFloat((rawPayout * (1 - houseEdgePercent)).toFixed(4));
 
-
         // Determine win or loss
         const isWin = condition === "above" ? rollResult > target : rollResult < target;
         const payout = isWin ? parseFloat((amount * payoutMultiplier).toFixed(8)) : 0;
