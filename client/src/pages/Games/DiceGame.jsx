@@ -21,7 +21,7 @@ const DiceGame = () => {
 
     const houseEdge = 0.01;
     const winChance = condition === "above" ? 100 - target : target;
-    const payoutMultiplier = Math.min(Math.max(((100 - houseEdge) / winChance), 1.0102), 49.5).toFixed(4);
+    const payoutMultiplier = Math.min(Math.max(((100 - houseEdge*100) / winChance), 1.0102), 49.5).toFixed(4);
 
     const handleSliderChange = (e) => {
         setTarget(parseFloat(e.target.value));
@@ -46,12 +46,12 @@ const DiceGame = () => {
             // setUser(prev => ({ ...prev, wallet: bet.gameData.diceRoll.user.wallet }));
             const updatedWallet = res.data.bet?.gameData?.diceRoll?.user?.wallet;
 
-if (typeof updatedWallet === "number") {
-    setUser(prev => ({
-        ...prev,
-        wallet: updatedWallet
-    }));
-}
+            if (typeof updatedWallet === "number") {
+                setUser(prev => ({
+                    ...prev,
+                    wallet: updatedWallet
+                }));
+            }
 
             setResult(res.data.bet?.gameData?.diceRoll?.state?.result.toFixed(2));
         } catch (err) {
@@ -108,7 +108,7 @@ if (typeof updatedWallet === "number") {
                                 style={{ width: `${100 - target}%` }}
                             ></div>
                         </div>
-                    {/* 
+                        {/* 
                         <div
                             className="absolute top-0 z-10 -translate-x-1/2"
                             style={{ left: `${target}%` }}
@@ -133,10 +133,12 @@ if (typeof updatedWallet === "number") {
                     </div>
                     {result && (
                         <div
-                            className="absolute -top-5 w-12 h-12 bg-white text-center text-red-500 rounded-md flex items-center justify-center text-sm"
+                            className="absolute -top-5 w-12 h-12 bg-white text-center rounded-md flex items-center justify-center text-sm rotate-45"
                             style={{ left: `calc(${parseFloat(result)}% - 1.5rem)` }}
                         >
-                            {result}
+                            <span className={`-rotate-45 ${bet.isWin ? "text-green-500" : "text-red-500"}`}>
+                                {result}
+                            </span>
                         </div>
                     )}
                 </div>
