@@ -1,4 +1,3 @@
-// DiceGame.js
 import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../utils/api";
@@ -24,28 +23,48 @@ const DiceGame = () => {
     const winChance = condition === "above" ? 100 - target : target;
     const payoutMultiplier = Math.min(Math.max(((100 - houseEdge * 100) / winChance), 1.0102), 49.5).toFixed(2);
 
+    const clampTarget = (val) => Math.min(Math.max(val, 2), 98);
+
     const handleSliderChange = (e) => {
         setTarget(parseFloat(e.target.value));
     };
 
-    const handleDrag = (e) => {
+    const updateTargetFromPosition = (clientX) => {
         if (!sliderRef.current) return;
 
         const rect = sliderRef.current.getBoundingClientRect();
-        const offsetX = e.clientX - rect.left;
+        const offsetX = clientX - rect.left;
         const percent = (offsetX / rect.width) * 100;
-        const clamped = Math.min(Math.max(percent, 2), 98);
-        setTarget(parseFloat(clamped.toFixed(2)));
+        setTarget(clampTarget(parseFloat(percent.toFixed(2))));
     };
 
     const handleMouseDown = () => {
-        document.addEventListener("mousemove", handleDrag);
+        document.addEventListener("mousemove", handleMouseMove);
         document.addEventListener("mouseup", handleMouseUp);
     };
 
+    const handleMouseMove = (e) => {
+        updateTargetFromPosition(e.clientX);
+    };
+
     const handleMouseUp = () => {
-        document.removeEventListener("mousemove", handleDrag);
+        document.removeEventListener("mousemove", handleMouseMove);
         document.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    const handleTouchStart = () => {
+        document.addEventListener("touchmove", handleTouchMove, { passive: false });
+        document.addEventListener("touchend", handleTouchEnd);
+    };
+
+    const handleTouchMove = (e) => {
+        e.preventDefault(); // prevent scroll while dragging
+        updateTargetFromPosition(e.touches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        document.removeEventListener("touchmove", handleTouchMove);
+        document.removeEventListener("touchend", handleTouchEnd);
     };
 
     const handleBet = async () => {
@@ -127,20 +146,21 @@ const DiceGame = () => {
                             ></div>
                         </div>
 
-                        {/* Draggable Handle */}
+                        {/* Draggable Handle (Mouse + Touch) */}
                         <div
                             className="absolute top-0 z-10 -translate-x-1/2 cursor-pointer"
                             style={{ left: `${target}%` }}
                             onMouseDown={handleMouseDown}
+                            onTouchStart={handleTouchStart}
                         >
-                            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center shadow-lg z-50">
+                            <div className="w-6 h-6 bg-blue-500 rounded flex items-center justify-center shadow-lg">
                                 <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
                                 <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
                                 <div className="w-[2px] h-4 bg-blue-300 mx-[1px]" />
                             </div>
                         </div>
 
-                        {/* Hidden Native Range for Keyboard Support */}
+                        {/* Hidden Native Range for accessibility */}
                         <input
                             type="range"
                             min="2"
