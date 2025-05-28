@@ -29,6 +29,7 @@ export const startMinesGame = async (req, res) => {
             betAmount: amount,
             gameData: {
                 mineCount: minesCount,
+                game: "mines",
                 revealedTiles: [],
                 mineHits: 0,
                 safeHits: 0

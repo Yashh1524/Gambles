@@ -34,10 +34,10 @@ export const rollDiceController = async (req, res) => {
 
         // Determine win or loss
         const isWin = condition === "above" ? rollResult > target : rollResult < target;
-        console.log("rollResult", rollResult)
-        console.log("target", target)
-        console.log("condition", condition)
-        console.log(isWin)
+        // console.log("rollResult", rollResult)
+        // console.log("target", target)
+        // console.log("condition", condition)
+        // console.log(isWin)
         const payout = isWin ? parseFloat((amount * payoutMultiplier).toFixed(8)) : 0;
 
         // Update wallet based on win or loss

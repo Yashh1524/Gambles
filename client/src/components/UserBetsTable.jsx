@@ -12,6 +12,13 @@ import WinningStatsCard from './WinningStatsCard';
 const columnHelper = createColumnHelper();
 
 const columns = [
+    columnHelper.accessor('game.name', {
+        header: 'Game',
+        cell: info => {
+            const name = info.getValue() || "Unknown";
+            return name.charAt(0).toUpperCase() + name.slice(1);
+        },
+    }),
     columnHelper.accessor('betAmount', {
         header: 'Bet Amount',
         cell: info => `₹${info.getValue().toLocaleString()}`,
@@ -57,6 +64,8 @@ export default function UserBetsTable({ bets = [] }) {
         pageIndex: 0,
         pageSize: 10,
     });
+
+    console.log(bets)
 
     const table = useReactTable({
         data: Array.isArray(bets) ? bets : [],
@@ -129,7 +138,7 @@ export default function UserBetsTable({ bets = [] }) {
                     <span className="text-center text-white text-sm md:text-md flex flex-col md:flex-row">
                         Page<span className='px-2'>
                             {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}
-                            </span>
+                        </span>
                     </span>
                     <button
                         onClick={() => table.nextPage()}
