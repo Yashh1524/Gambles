@@ -1,8 +1,9 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import { useUser } from "@/contexts/UserContext";
+import UserBetsTable from "@/components/UserBetsTable";
 
 const DiceGame = () => {
     const { state } = useLocation();
@@ -16,12 +17,74 @@ const DiceGame = () => {
     const [result, setResult] = useState(null);
     const [bet, setBet] = useState({});
     const [rollInProgress, setRollInProgress] = useState(false);
+    const [totalWinAmount, setTotalWinAmount] = useState(0)
+    const [winningStreak, setWinningStreak] = useState(0)
+    const [loadingWinningData, setLoadingWinningData] = useState(false)
+    const [loadingBets, setLoadingBets] = useState(false)
+    const [bets, setBets] = useState([])
+    const [totalWageredAmount, setTotalWageredAmount] = useState(0)
+    const [totalWins, setTotalWins] = useState(0)
+    const [totalLose, setTotalLose] = useState(0)
 
     const sliderRef = useRef(null);
 
     const houseEdge = 0.01;
     const winChance = condition === "above" ? 100 - target : target;
-    const payoutMultiplier = Math.min(Math.max(((100 - houseEdge * 100) / winChance), 1.0102), 49.5).toFixed(2);
+    const payoutMultiplier = Math.min(Math.max(((100 - houseEdge * 100) / winChance), 1.0102), 49.5).toFixed(4);
+
+    useEffect(() => {
+
+        const fetchUserBetsByGame = async () => {
+            try {
+                setLoadingBets(true)
+                const response = await api.get(`/api/bet/fetch-user-bet-by-game?gameId=${gameId || ""}`)
+                // console.log("bets:", response)
+                if (response.data?.success) {
+                    setBets(response.data?.data)
+                }
+            } catch (error) {
+                console.error("Error fetching bets:", error);
+            } finally {
+                setLoadingBets(false)
+            }
+        }
+
+        const fetchTotalWinAndWinStreakByGame = async () => {
+            try {
+                setLoadingWinningData(true)
+                const response = await api.get(
+                    `/api/bet/get-user-totalwin-and-winningstreak-by-game?gameId=${gameId || ""}`
+                );
+                // console.log(response)
+
+                // Access data inside response.data
+                const {
+                    success,
+                    totalWinningAmount,
+                    totalWinningStreak,
+                    totalWageredAmount,
+                    totalWins,
+                    totalLose
+                } = response.data;
+
+                if (!success)
+                    throw new Error("Error while fetching total win and win streak data");
+
+                setTotalWinAmount(totalWinningAmount);
+                setWinningStreak(totalWinningStreak);
+                setTotalWageredAmount(totalWageredAmount)
+                setTotalWins(totalWins)
+                setTotalLose(totalLose)
+            } catch (error) {
+                console.error("Error fetching total win and win streak:", error);
+            } finally {
+                setLoadingWinningData(false)
+            }
+        };
+
+        fetchTotalWinAndWinStreakByGame();
+        fetchUserBetsByGame()
+    }, []);
 
     const clampTarget = (val) => Math.min(Math.max(val, 2), 98);
 
@@ -102,7 +165,7 @@ const DiceGame = () => {
 
     return (
         <div className="p-6 text-white bg-[#0e1b26] min-h-screen">
-            <div className="max-w-xl mx-auto space-y-6">
+            <div className="max-w-xl mx-auto space-y-6 select-none">
                 <div className="flex items-center space-x-2">
                     <input
                         type="number"
@@ -206,6 +269,44 @@ const DiceGame = () => {
                 >
                     {rollInProgress ? "Rolling..." : "Bet"}
                 </button>
+            </div>
+            <div className="w-screen lg:w-full p-10 flex flex-col gap-5">
+                {/* Win/Wager Summary UI */}
+                {loadingWinningData ? (
+                    <div className="text-white">Loading summary...</div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-white">
+                        <div className="bg-[#1A2934] p-4 rounded-lg shadow-md border border-gray-900">
+                            <h4 className="text-sm text-gray-400">Total Wagered</h4>
+                            <p className="text-lg font-semibold text-blue-400">₹{totalWageredAmount.toLocaleString()}</p>
+                        </div>
+                        <div className="bg-[#1A2934] p-4 rounded-lg shadow-md border border-gray-900">
+                            <h4 className="text-sm text-gray-400">Total Wins</h4>
+                            <p className="text-lg font-semibold text-green-400">{totalWins}</p>
+                        </div>
+                        <div className="bg-[#1A2934] p-4 rounded-lg shadow-md border border-gray-900">
+                            <h4 className="text-sm text-gray-400">Total Losses</h4>
+                            <p className="text-lg font-semibold text-red-400">{totalLose}</p>
+                        </div>
+                        <div className="bg-[#1A2934] p-4 rounded-lg shadow-md border border-gray-900">
+                            <h4 className="text-sm text-gray-400">Win Rate</h4>
+                            <p className="text-lg font-semibold text-yellow-400">
+                                {totalWins + totalLose > 0
+                                    ? ((totalWins / (totalWins + totalLose)) * 100).toFixed(1)
+                                    : "0.0"}%
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {/* Bet History Table */}
+                <div className="text-white bg-[#111827] w-full">
+                    {loadingBets ? (
+                        <div>Loading bets...</div>
+                    ) : (
+                        <UserBetsTable bets={bets} />
+                    )}
+                </div>
             </div>
         </div>
     );
