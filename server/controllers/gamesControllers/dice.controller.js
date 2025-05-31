@@ -81,7 +81,10 @@ export const rollDiceController = async (req, res) => {
             status: "completed",
         });
 
-        res.status(200).json({ message: "Bet placed", bet: newBet });
+        // Populate game.displayName after creation
+        const populatedBet = await betModel.findById(newBet._id).populate("game", "displayName");
+
+        res.status(200).json({ message: "Bet placed", bet: populatedBet });
 
     } catch (err) {
         console.error(err);

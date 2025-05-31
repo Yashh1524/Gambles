@@ -134,7 +134,11 @@ export const endMinesGame = async (req, res) => {
         bet.winAmount = winAmount;
         await bet.save();
 
-        res.status(200).json({ message: "Game ended", wallet: user.wallet, bet });
+        // Populate game.displayName after saving
+        const populatedBet = await betModel.findById(bet._id).populate("game", "displayName");
+
+        res.status(200).json({ message: "Game ended", wallet: user.wallet, bet: populatedBet });
+        // res.status(200).json({ message: "Game ended", wallet: user.wallet, bet });
     } catch (err) {
         res.status(500).json({ message: "Error ending game" });
     }

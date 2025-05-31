@@ -11,6 +11,7 @@ const MinesGame = () => {
 
     const location = useLocation();
     const { gameId } = location.state || {};
+    
     // console.log(gameId)
 
     const [amount, setAmount] = useState(0);
@@ -59,7 +60,7 @@ const MinesGame = () => {
         const fetchUserBetsByGame = async () => {
             try {
                 setLoadingBets(true)
-                const response = await api.get(`/api/bet/fetch-user-bet-by-game?gameId=${gameId}`)
+                const response = await api.get(`/api/bet/fetch-user-bet-by-game?gameId=${gameId || "6822f03212a5549e72f26829"}`)
                 // console.log("bets:", response)
                 if (response.data?.success) {
                     setBets(response.data?.data)
@@ -107,7 +108,6 @@ const MinesGame = () => {
         fetchTotalWinAndWinStreakByGame();
         fetchUserBetsByGame()
     }, []);
-
 
     useEffect(() => {
         const fetchPendingGame = async () => {
@@ -212,16 +212,22 @@ const MinesGame = () => {
             const { data } = await api.post("/api/games/mines/end-mine", {
                 betId
             });
-            // console.log(data)
-            const formattedBet = {
-                _id: data.bet._id,
-                betAmount: data.bet.betAmount,
-                winAmount: data.bet.winAmount,
-                status: data.bet.status,
-                createdAt: data.bet.createdAt,
-            }
+            console.log("data", data)
+            // const formattedBet = {
+                //     _id: data.bet._id,
+                //     game: {
+            //         "_id": "6835bfab8200b1050f2716e1",
+            //         "displayName": "Dice"
+            //     },
+            //     betAmount: data.bet.betAmount,
+            //     winAmount: data.bet.winAmount,
+            //     status: data.bet.status,
+            //     createdAt: data.bet.createdAt,
+            // }
+            console.log(data.bet)
             setTotalWageredAmount(totalWageredAmount + data.bet.betAmount)
-            setBets(prevBets => [formattedBet, ...prevBets]);
+            setBets(prev => [data.bet, ...prev])
+            // setBets(prevBets => [formattedBet, ...prevBets]);
             if (won) {
                 setTotalWinAmount(totalWinAmount + data.bet.winAmount - data.bet.betAmount)
                 setWinningStreak(winningStreak + 1)

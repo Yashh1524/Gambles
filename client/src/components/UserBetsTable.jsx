@@ -62,7 +62,7 @@ export default function UserBetsTable({ bets = [] }) {
         pageSize: 10,
     });
 
-    console.log(bets)
+    // console.log(bets)
 
     const table = useReactTable({
         data: Array.isArray(bets) ? bets : [],

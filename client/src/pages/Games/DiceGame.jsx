@@ -145,7 +145,7 @@ const DiceGame = () => {
                 gameId,
             });
 
-            console.log(res)
+            // console.log(res)
             setBet(res.data.bet);
             const updatedWallet = res.data.bet?.gameData?.diceRoll?.user?.wallet;
 
