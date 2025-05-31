@@ -38,8 +38,8 @@ const DiceGame = () => {
         const fetchUserBetsByGame = async () => {
             try {
                 setLoadingBets(true)
-                const response = await api.get(`/api/bet/fetch-user-bet-by-game?gameId=${gameId || ""}`)
-                // console.log("bets:", response)
+                const response = await api.get(`/api/bet/fetch-user-bet-by-game?gameId=${gameId || "6835bfab8200b1050f2716e1"}`)
+                console.log("bets:", response)
                 if (response.data?.success) {
                     setBets(response.data?.data)
                 }
@@ -54,7 +54,7 @@ const DiceGame = () => {
             try {
                 setLoadingWinningData(true)
                 const response = await api.get(
-                    `/api/bet/get-user-totalwin-and-winningstreak-by-game?gameId=${gameId || ""}`
+                    `/api/bet/get-user-totalwin-and-winningstreak-by-game?gameId=${gameId || "6835bfab8200b1050f2716e1"}`
                 );
                 // console.log(response)
 
@@ -145,6 +145,7 @@ const DiceGame = () => {
                 gameId,
             });
 
+            console.log(res)
             setBet(res.data.bet);
             const updatedWallet = res.data.bet?.gameData?.diceRoll?.user?.wallet;
 
@@ -154,10 +155,16 @@ const DiceGame = () => {
                     wallet: updatedWallet
                 }));
             }
-
-            if (bet.isWin) {
+            setBets(prev => [res.data.bet, ...prev])
+            if (res.data.bet.isWin) {
+                setTotalWinAmount(totalWinAmount + res.data.bet.winAmount - res.data.bet.betAmount)
                 setTotalWins(totalWins + 1)
+            } else {
+                setWinningStreak(0)
+                setTotalWinAmount(totalWinAmount - res.data.bet.betAmount)
+                setTotalLose(totalLose + 1)
             }
+            setTotalWageredAmount(totalWageredAmount + amount)
 
             setResult(res.data.bet?.gameData?.diceRoll?.state?.result.toFixed(2));
         } catch (err) {
@@ -169,10 +176,10 @@ const DiceGame = () => {
 
     return (
         <div className="bg-[#0E1B26] min-h-screen">
-            <div className=" text-white flex items-center flex-col gap-1">
-                <div className="p-10 flex flex-col lg:flex-row w-full gap-10 max-w-7xl mx-auto">
+            <div className=" text-white flex items-center flex-col">
+                <div className="p-5 md:p-10 flex flex-col lg:flex-row w-full gap-10 max-w-7xl mx-auto">
                     {/* Left Panel */}
-                    <div className="bg-[#132631] rounded-2xl p-6 w-full h-[70vh] max-w-sm mx-auto shadow-md text-white">
+                    <div className="bg-[#132631] rounded-2xl p-6 w-full lg:h-[70vh] max-w-sm mx-auto shadow-md text-white">
                         <h2 className="text-2xl font-semibold mb-4 text-center">🎲 Dice</h2>
                         <div className="mb-4">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-2 mb-4">
@@ -282,7 +289,7 @@ const DiceGame = () => {
 
                     {/* Right Panel */}
                     <div className="w-full mx-auto space-y-6 select-none">
-                        <div className="relative mt-10 lg:mt-30" ref={sliderRef}>
+                        <div className="relative mt-10 lg:mt-50" ref={sliderRef}>
                             <div className="flex justify-between px-1 text-sm text-white/60">
                                 {[0, 25, 50, 75, 100].map((val) => (
                                     <span key={val}>{val}</span>
@@ -339,7 +346,7 @@ const DiceGame = () => {
                             )}
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center mt-8">
+                        <div className="grid grid-cols-3 gap-4 text-center mt-8">
                             <div>
                                 <div className="text-xs text-white/60">Multiplier</div>
                                 <div className="mt-1 p-2 bg-gray-800 rounded">{payoutMultiplier}</div>
