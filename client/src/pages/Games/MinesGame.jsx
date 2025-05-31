@@ -7,6 +7,7 @@ import { ImSpinner2 } from "react-icons/im";
 import { Link, useLocation } from "react-router-dom";
 import UserBetsTable from "@/components/UserBetsTable";
 import GameSummaryAndBets from "@/components/GameSummaryAndBets";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const MinesGame = () => {
 
@@ -252,7 +253,10 @@ const MinesGame = () => {
 
     return (
         <div className="min-h-full bg-[#0f1b24]">
-                
+
+            {/* Breadcrumbs */}
+            <Breadcrumbs />
+
             <div className=" text-white flex items-center px-4 py-6 flex-col gap-10">
                 <div className="flex flex-col lg:flex-row w-full gap-10 max-w-7xl mx-auto">
                     {/* Left Panel */}

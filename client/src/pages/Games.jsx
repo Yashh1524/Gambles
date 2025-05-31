@@ -1,3 +1,4 @@
+import Breadcrumbs from "@/components/Breadcrumbs";
 import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -27,26 +28,28 @@ const Games = () => {
     if (error) return <p className="text-red-500">{error}</p>;
 
     return (
-        <div className="p-6">
-            <h1 className="text-2xl font-bold text-white mb-4">Games</h1>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4">
-                {games.map((game) => (
-                    <Link
-                        key={game._id}
-                        to={`/games/${game.name}`}
-                        state={{ gameId: game._id }}
-                        className="transition-transform hover:scale-105"
-                    >
-                        <img
-                            src={game.image}
-                            alt={game.name}
-                            className="rounded-xl shadow-md w-full h-auto"
-                        />
-                    </Link>
-                ))}
+        <>
+            <Breadcrumbs />
+            <div className="px-10 py-6">
+                <h1 className="text-2xl font-bold text-white my-4">Games</h1>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-4">
+                    {games.map((game) => (
+                        <Link
+                            key={game._id}
+                            to={`/games/${game.name}`}
+                            state={{ gameId: game._id }}
+                            className="transition-transform hover:scale-105"
+                        >
+                            <img
+                                src={game.image}
+                                alt={game.name}
+                                className="rounded-xl shadow-md w-full h-auto"
+                            />
+                        </Link>
+                    ))}
+                </div>
             </div>
-        </div>
+        </>
     );
 };
 

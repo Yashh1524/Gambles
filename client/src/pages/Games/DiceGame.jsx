@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import api from "../../utils/api";
 import toast from "react-hot-toast";
 import { useUser } from "@/contexts/UserContext";
 import UserBetsTable from "@/components/UserBetsTable";
 import { ImSpinner2 } from "react-icons/im";
 import GameSummaryAndBets from "@/components/GameSummaryAndBets";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const DiceGame = () => {
     const { state } = useLocation();
@@ -177,6 +178,11 @@ const DiceGame = () => {
 
     return (
         <div className="bg-[#0E1B26] min-h-screen">
+            
+            {/* Breadcrumbs */}
+            <Breadcrumbs />
+            
+            {/* Main Content */}
             <div className=" text-white flex items-center flex-col">
                 <div className="p-5 md:p-10 flex flex-col lg:flex-row w-full gap-10 max-w-7xl mx-auto">
                     {/* Left Panel */}
