@@ -47,6 +47,12 @@ const Games = () => {
                             />
                         </Link>
                     ))}
+                    {/* Extra card at the end */}
+                    <div className="bg-[#0F212E] border border-gray-900 p-4 rounded-xl shadow-md flex items-center justify-center text-center hover:scale-105 transition-transform">
+                        <span className="text-gray-400 text-sm sm:text-base">
+                            More games coming soon!
+                        </span>
+                    </div>
                 </div>
             </div>
         </>

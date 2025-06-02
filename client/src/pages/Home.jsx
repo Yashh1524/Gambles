@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '@/utils/api';
+import { useUser } from '@/contexts/UserContext';
 
 const bannerImages = [
     '/images/others/banner1.png',
@@ -12,6 +13,7 @@ const bannerImages = [
 ];
 
 export default function Home() {
+    const { user } = useUser();
     const [currentBanner, setCurrentBanner] = useState(0);
     const [fade, setFade] = useState(true);
     const [games, setGames] = useState([]);
@@ -20,11 +22,11 @@ export default function Home() {
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setFade(false); // Start fade out
+            setFade(false);
             setTimeout(() => {
                 setCurrentBanner((prev) => (prev + 1) % bannerImages.length);
-                setFade(true); // Fade in new image
-            }, 500); // Halfway through the interval
+                setFade(true);
+            }, 500);
         }, 2000);
         return () => clearInterval(interval);
     }, []);
@@ -61,6 +63,30 @@ export default function Home() {
                 ))}
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent h-24"></div>
             </div>
+
+            {/* User Section */}
+            {user && (
+                <div className="px-4 sm:px-10 py-6 bg-[#1a2b36] flex flex-col sm:flex-row sm:items-center sm:justify-between rounded-b-xl shadow">
+                    <div className="mb-2 sm:mb-0">
+                        <p className="text-lg font-semibold">Welcome, {user.name}!</p>
+                        <p className="text-sm text-gray-400">Wallet Balance: ₹{Number(user.wallet).toFixed(2)}</p>
+                    </div>
+                    <div className="flex gap-4">
+                        <Link
+                            to="/profile"
+                            className="bg-blue-600 hover:bg-blue-700 px-4 py-1 rounded text-sm"
+                        >
+                            Profile
+                        </Link>
+                        <Link
+                            to="/dashboard"
+                            className="bg-green-600 hover:bg-green-700 px-4 py-1 rounded text-sm"
+                        >
+                            Dashboard
+                        </Link>
+                    </div>
+                </div>
+            )}
 
             {/* Games Section */}
             <div className="px-4 sm:px-10 py-10">
