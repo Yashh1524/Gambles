@@ -52,7 +52,7 @@ export default function Sidebar() {
             </div>
 
             {/* Navigation links */}
-            <nav className="flex-1 px-2 mt-10 space-y-2">
+            <nav className="flex-1 px-2 mt-10 space-y-2 lg:relative">
                 <div
                     onClick={() => navigate("/")}
                     className={menuItemClass}
@@ -121,7 +121,7 @@ export default function Sidebar() {
                         </button>
                     </div>
                 ) : (
-                    <div className="px-2 pt-6 space-y-2">
+                    <div className="px-2 pt-6 lg:w-[90%] space-y-2 lg:absolute lg:bottom-10">
                         {
                             !user.isVerified && (
                                 <button
