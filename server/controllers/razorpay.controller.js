@@ -7,7 +7,7 @@ import userModel from "../models/user.model.js";
 
 const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
-    key_secret: process.env.RAZORPAY_KEY_SECRET
+    key_secret: process.env.RAZORPAY_KEY_SECRET 
 });
 
 export const createDepositOrderController = async (req, res) => {
@@ -31,7 +31,7 @@ export const createDepositOrderController = async (req, res) => {
             receipt: `rcpt_${Date.now()}_${userId.slice(-5)}`, // Safe under 40 chars
             payment_capture: 1
         };
-
+        // console.log(razorpayInstance)
         const order = await razorpayInstance.orders.create(options);
 
         const transaction = await transactionModel.create({
