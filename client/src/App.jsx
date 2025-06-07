@@ -32,8 +32,11 @@ function App() {
           />
 
           {/* Page Content */}
-          <main className="flex-1 overflow-y-auto">
-            <Outlet />
+          <main className="flex min-h-[92vh] flex-col justify-between overflow-y-auto scrollbar-hide space-y-4 bg-[#0F1B24]">
+            <div>
+              <Outlet />
+            </div>
+            <Footer />
           </main>
         </div>
 
@@ -47,7 +50,7 @@ function App() {
       </div>
 
       {/* Footer */}
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

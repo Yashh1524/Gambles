@@ -66,7 +66,6 @@ export const revealTile = async (req, res) => {
         // const isMine = Math.random() <= chanceOfMine; //100% fair
         const houseEdge = 0.99; // 1% house edge — tweak this if needed (e.g., 0.98 for 2%)
         const isMine = Math.random() <= (chanceOfMine * (1 / houseEdge));
-
         // console.log("chanceOfMine:", chanceOfMine)
         // console.log("isMine:", isMine)
 
