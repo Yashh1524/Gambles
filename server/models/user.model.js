@@ -31,7 +31,9 @@ const userSchema = new mongoose.Schema({
     },
     wallet: {
         type: Number,
-        default: 0
+        default: 0,
+        set: (v) => Math.round(v * 100) / 100,
+        get: (v) => v.toFixed(2) // string output with 2 decimals
     },
     passResetOtp: {
         type: String,
