@@ -46,7 +46,6 @@ export const rollDiceController = async (req, res) => {
         }
         await user.save();
 
-
         // Construct gameData without internal id
         const gameData = {
             diceRoll: {

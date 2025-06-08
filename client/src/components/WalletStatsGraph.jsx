@@ -9,6 +9,7 @@ import {
     Tooltip,
     Legend,
     ResponsiveContainer,
+    ReferenceLine,
 } from 'recharts';
 
 const WalletStatsGraph = ({ data }) => {
@@ -17,6 +18,7 @@ const WalletStatsGraph = ({ data }) => {
             <h2 className="text-white text-xl font-semibold mb-4">Wallet Overview</h2>
             <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                    <ReferenceLine y={0} stroke="#f59e0b" strokeDasharray="5 10" label={{ position: 'insideRight', fill: '#f59e0b' }} />
                     <CartesianGrid strokeDasharray="3 3" stroke="#334e5c" />
                     <XAxis dataKey="date" stroke="#cbd5e1" />
                     <YAxis stroke="#cbd5e1" />
