@@ -137,6 +137,7 @@ const DiceGame = () => {
         if (!user) return toast.error("Please login to play game");
         if (!user?.isVerified) return toast.error("Please verify account first.");
         if (!amount || amount <= 0) return toast.error("Enter a valid amount");
+        if(amount > user.wallet) return toast.error("Insufficient Balance.")
 
         setRollInProgress(true);
         try {

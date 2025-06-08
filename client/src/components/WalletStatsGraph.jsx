@@ -25,8 +25,8 @@ const WalletStatsGraph = ({ data }) => {
                         labelStyle={{ color: '#f0f0f0' }}
                     />
                     <Legend wrapperStyle={{ color: '#fff' }} />
-                    <Line type="monotone" dataKey="walletAmount" stroke="#10b981" strokeWidth={2} name="Wallet Balance" />
-                    <Line type="monotone" dataKey="actualWalletAfterBets" stroke="#3b82f6" strokeWidth={2} name="Post-Bet Wallet" />
+                    <Line type="monotone" dataKey="walletAmount" stroke="#10b981" strokeWidth={2} name="Wallet Balance After Bets" />
+                    <Line type="monotone" dataKey="actualWalletAfterBets" stroke="#3b82f6" strokeWidth={2} name="Actual Wallet Balance(Deposit/Withdraw)" />
                     {data.some(item => item.netBetResult !== undefined) && (
                         <Line type="monotone" dataKey="netBetResult" stroke="#f43f5e" strokeWidth={2} name="Daily Profit/Loss" />
                     )}

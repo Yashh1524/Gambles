@@ -300,7 +300,7 @@ const MinesGame = () => {
                                         value={amount === 0 ? '' : amount}
                                         onChange={(e) => {
                                             const value = e.target.value;
-                                            setAmount(value === '' ? 0 : Number(value));
+                                            setAmount(value === '' ? 0 : Number(value).toFixed(2));
                                         }}
                                         onBlur={() => {
                                             setAmount((prev) => Number(Number(prev).toFixed(2)));

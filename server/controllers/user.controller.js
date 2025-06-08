@@ -834,7 +834,7 @@ export const getDayWiseWalletStatsController = async (req, res) => {
         for (const txn of transactions) {
             mergeMap.set(txn._id, {
                 date: txn._id,
-                walletChange: txn.netTransaction,
+                walletChange: txn.netTransaction, 
                 netBetResult: 0
             });
         }
@@ -870,7 +870,7 @@ export const getDayWiseWalletStatsController = async (req, res) => {
         });
 
         return res.status(200).json(finalStats);
-        
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({
