@@ -773,7 +773,7 @@ export const getDayWiseWalletStats = async (req, res) => {
     try {
         const userId = req.user.id;
 
-        // 1. Aggregate Transactions (DEPOSIT/WITHDRAW) by day
+        // 1. Aggregate Transactions
         const transactions = await transactionModel.aggregate([
             {
                 $match: {
@@ -801,9 +801,8 @@ export const getDayWiseWalletStats = async (req, res) => {
                 }
             }
         ]);
-        console.log("transactions:", transactions);
 
-        // 2. Aggregate Bet Results (win/loss) by day
+        // 2. Aggregate Bets
         const bets = await betModel.aggregate([
             {
                 $match: {
@@ -816,7 +815,7 @@ export const getDayWiseWalletStats = async (req, res) => {
                     _id: {
                         $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
                     },
-                    netBetImpact: {
+                    netBetResult: {
                         $sum: {
                             $cond: [
                                 { $eq: ["$isWin", true] },
@@ -828,34 +827,31 @@ export const getDayWiseWalletStats = async (req, res) => {
                 }
             }
         ]);
-        console.log("bets:", bets);
 
-        // 3. Merge transactions and bets into single timeline
+        // 3. Merge Maps
         const mergeMap = new Map();
 
-        // Add transactions
         for (const txn of transactions) {
             mergeMap.set(txn._id, {
                 date: txn._id,
                 walletChange: txn.netTransaction,
-                netBetImpact: 0
+                netBetResult: 0
             });
         }
 
-        // Add bets
         for (const bet of bets) {
             if (mergeMap.has(bet._id)) {
-                mergeMap.get(bet._id).netBetImpact = bet.netBetImpact;
+                mergeMap.get(bet._id).netBetResult = bet.netBetResult;
             } else {
                 mergeMap.set(bet._id, {
                     date: bet._id,
                     walletChange: 0,
-                    netBetImpact: bet.netBetImpact
+                    netBetResult: bet.netBetResult
                 });
             }
         }
 
-        // 4. Sort and calculate cumulative balances
+        // 4. Sort and compute cumulative values
         const mergedArray = Array.from(mergeMap.values()).sort((a, b) => new Date(a.date) - new Date(b.date));
 
         let cumulativeWallet = 0;
@@ -863,12 +859,13 @@ export const getDayWiseWalletStats = async (req, res) => {
 
         const finalStats = mergedArray.map(entry => {
             cumulativeWallet += entry.walletChange;
-            actualWallet += entry.walletChange + entry.netBetImpact;
+            actualWallet += entry.walletChange + entry.netBetResult;
 
             return {
                 date: entry.date,
-                walletAmount: cumulativeWallet,           // Wallet from deposits/withdrawals only
-                actualWalletAfterBets: actualWallet       // After applying win/loss
+                walletAmount: cumulativeWallet,
+                actualWalletAfterBets: actualWallet,
+                netBetResult: entry.netBetResult
             };
         });
 
