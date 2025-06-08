@@ -863,9 +863,9 @@ export const getDayWiseWalletStatsController = async (req, res) => {
 
             return {
                 date: entry.date,
-                walletAmount: cumulativeWallet,
-                actualWalletAfterBets: actualWallet,
-                netBetResult: entry.netBetResult
+                walletAmount: cumulativeWallet.toFixed(2),
+                actualWalletAfterBets: actualWallet.toFixed(2),
+                netBetResult: entry.netBetResult.toFixed(2),
             };
         });
 

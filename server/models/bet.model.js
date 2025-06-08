@@ -13,11 +13,13 @@ const betSchema = new mongoose.Schema({
     },
     betAmount: {
         type: Number,
-        required: true
+        required: true,
+        set: val => Math.round(val * 100) / 100
     },
     winAmount: {
         type: Number,
-        default: 0
+        default: 0,
+        set: val => Math.round(val * 100) / 100
     },
     isWin: {
         type: Boolean,

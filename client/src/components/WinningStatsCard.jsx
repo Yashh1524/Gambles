@@ -27,7 +27,7 @@ export default function WinningStatsCard() {
         fetchStats();
     }, []);
 
-    if (loading) return <div className="text-white">Loading winning stats...</div>;
+    if (loading) return <div className="text-white">Loading stats...</div>;
 
     const { totalWinningAmount, totalWinningStreak, totalWins, totalLose, totalWageredAmount } = stats;
     const totalBets = totalWins + totalLose;
