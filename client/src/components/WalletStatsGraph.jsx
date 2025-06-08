@@ -28,7 +28,7 @@ const WalletStatsGraph = ({ data }) => {
                     <Line type="monotone" dataKey="walletAmount" stroke="#10b981" strokeWidth={2} name="Wallet Balance" />
                     <Line type="monotone" dataKey="actualWalletAfterBets" stroke="#3b82f6" strokeWidth={2} name="Post-Bet Wallet" />
                     {data.some(item => item.netBetResult !== undefined) && (
-                        <Line type="monotone" dataKey="netBetResult" stroke="#f43f5e" strokeWidth={2} name="Net Bet Result" />
+                        <Line type="monotone" dataKey="netBetResult" stroke="#f43f5e" strokeWidth={2} name="Daily Profit/Loss" />
                     )}
                 </LineChart>
             </ResponsiveContainer>
