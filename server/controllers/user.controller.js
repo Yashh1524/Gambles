@@ -769,7 +769,7 @@ export const updateUserDetailsController = async (req, res) => {
     }
 };
 
-export const getDayWiseWalletStats = async (req, res) => {
+export const getDayWiseWalletStatsController = async (req, res) => {
     try {
         const userId = req.user.id;
 
@@ -870,6 +870,7 @@ export const getDayWiseWalletStats = async (req, res) => {
         });
 
         return res.status(200).json(finalStats);
+        
     } catch (error) {
         console.error(error);
         return res.status(500).json({
