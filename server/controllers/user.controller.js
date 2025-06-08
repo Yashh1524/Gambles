@@ -8,6 +8,9 @@ import { generateOTP } from "../utils/generateOTP.js";
 import verifyEmail from "../email/verifyEmail.js";
 import resetPassOTPEmail from "../email/resetPasswordOTPEmail.js";
 import { accessCookieOptions, refreshCookieOptions } from "../utils/cookieOptions.js";
+import transactionModel from "../models/transaction.model.js";
+import mongoose from "mongoose";
+import betModel from "../models/bet.model.js";
 
 // We are using middelware before this to check Au
 const SECRET_KEY = process.env.SECRET_KEY_ACCESS_TOKEN;
@@ -757,6 +760,119 @@ export const updateUserDetailsController = async (req, res) => {
                 isVerified: user.isVerified
             }
         });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            success: false,
+            message: "Internal server error."
+        });
+    }
+};
+
+export const getDayWiseWalletStats = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        // 1. Aggregate Transactions (DEPOSIT/WITHDRAW) by day
+        const transactions = await transactionModel.aggregate([
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(userId),
+                    status: "SUCCESS"
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: {
+                            format: "%Y-%m-%d",
+                            date: "$createdAt"
+                        }
+                    },
+                    netTransaction: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$type", "DEPOSIT"] },
+                                "$amount",
+                                { $multiply: ["$amount", -1] }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]);
+        console.log("transactions:", transactions);
+
+        // 2. Aggregate Bet Results (win/loss) by day
+        const bets = await betModel.aggregate([
+            {
+                $match: {
+                    user: new mongoose.Types.ObjectId(userId),
+                    status: "completed"
+                }
+            },
+            {
+                $group: {
+                    _id: {
+                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                    },
+                    netBetImpact: {
+                        $sum: {
+                            $cond: [
+                                { $eq: ["$isWin", true] },
+                                { $subtract: ["$winAmount", "$betAmount"] },
+                                { $multiply: ["$betAmount", -1] }
+                            ]
+                        }
+                    }
+                }
+            }
+        ]);
+        console.log("bets:", bets);
+
+        // 3. Merge transactions and bets into single timeline
+        const mergeMap = new Map();
+
+        // Add transactions
+        for (const txn of transactions) {
+            mergeMap.set(txn._id, {
+                date: txn._id,
+                walletChange: txn.netTransaction,
+                netBetImpact: 0
+            });
+        }
+
+        // Add bets
+        for (const bet of bets) {
+            if (mergeMap.has(bet._id)) {
+                mergeMap.get(bet._id).netBetImpact = bet.netBetImpact;
+            } else {
+                mergeMap.set(bet._id, {
+                    date: bet._id,
+                    walletChange: 0,
+                    netBetImpact: bet.netBetImpact
+                });
+            }
+        }
+
+        // 4. Sort and calculate cumulative balances
+        const mergedArray = Array.from(mergeMap.values()).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        let cumulativeWallet = 0;
+        let actualWallet = 0;
+
+        const finalStats = mergedArray.map(entry => {
+            cumulativeWallet += entry.walletChange;
+            actualWallet += entry.walletChange + entry.netBetImpact;
+
+            return {
+                date: entry.date,
+                walletAmount: cumulativeWallet,           // Wallet from deposits/withdrawals only
+                actualWalletAfterBets: actualWallet       // After applying win/loss
+            };
+        });
+
+        return res.status(200).json(finalStats);
     } catch (error) {
         console.error(error);
         return res.status(500).json({

@@ -14,6 +14,7 @@ import {
     getUserDetailsByEmailController,
     depositMoneyToUserWalletController,
     updateUserDetailsController,
+    getDayWiseWalletStats,
 } from "../controllers/user.controller.js";
 import AuthMiddleware from "../middleware/authMiddleware.js";
 
@@ -33,5 +34,6 @@ userRoutes.get("/my-details", AuthMiddleware, getUserDetailsController);
 userRoutes.get("/get-user-by-email", getUserDetailsByEmailController)
 userRoutes.post("/deposit-money", AuthMiddleware, depositMoneyToUserWalletController)
 userRoutes.patch("/update-user-details", AuthMiddleware, updateUserDetailsController)
+userRoutes.get("/get-day-wise-wallet-stats", AuthMiddleware, getDayWiseWalletStats)
 
 export default userRoutes;
