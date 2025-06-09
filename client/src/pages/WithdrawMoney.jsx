@@ -73,7 +73,7 @@ const WithdrawMoney = () => {
     };
 
     return (
-        <div className="h-full bg-[#0f1b24] text-white flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[#0f1b24] text-white flex items-center justify-center px-4">
             {showSuccess ? (
                 <div className="flex flex-col items-center justify-center space-y-4">
                     <FaCheckCircle className="text-green-500 text-6xl animate-pulse" />

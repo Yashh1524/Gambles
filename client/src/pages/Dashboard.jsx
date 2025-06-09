@@ -6,6 +6,7 @@ import WinningStatsCard from '@/components/WinningStatsCard';
 import api from '@/utils/api';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import WalletStatsGraph from '@/components/WalletStatsGraph';
+import ProfitLossGraph from '@/components/ProfitLossGraph';
 
 export default function Dashboard() {
     const [bets, setBets] = useState([]);
@@ -47,7 +48,12 @@ export default function Dashboard() {
             <div className="p-6 space-y-3 text-white min-h-screen w-screen lg:w-full">
                 <h1 className="text-2xl font-bold text-white">Dashboard</h1>
                 <WinningStatsCard />
-                {!loadingStats && <WalletStatsGraph data={walletStats} />}
+                {!loadingStats && (
+                    <>
+                        <WalletStatsGraph data={walletStats} />
+                        <ProfitLossGraph data={walletStats}/>
+                    </>
+                )}
                 {loadingBets ? (
                     <div>Loading bets...</div>
                 ) : (
