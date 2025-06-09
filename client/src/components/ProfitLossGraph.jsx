@@ -24,7 +24,7 @@ const ProfitLossGraph = ({ data }) => {
         <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 pb-15 shadow-lg mb-10">
             <h2 className="text-white text-xl font-semibold mb-4">Daily Profit / Loss</h2>
             <ResponsiveContainer width="100%" height="98%">
-                <AreaChart data={formattedData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
+                <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: 0, bottom: 0 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334e5c" />
                     <XAxis dataKey="date" stroke="#cbd5e1" />
                     <YAxis stroke="#cbd5e1" domain={[-maxAbs, maxAbs]} />
@@ -32,9 +32,13 @@ const ProfitLossGraph = ({ data }) => {
                         contentStyle={{ backgroundColor: '#1e2d3d', border: 'none', color: '#fff' }}
                         labelStyle={{ color: '#f0f0f0' }}
                     />
-                    <ReferenceLine y={0} stroke="#f59e0b" strokeDasharray="5 10" />
+                    <ReferenceLine 
+                        y={0} 
+                        stroke="#f59e0b" 
+                        strokeDasharray="5 10" 
+                    />
                     <Area
-                        type="monotone"
+                        type="linear"
                         dataKey="profit"
                         stroke="#22c55e"
                         fill="#22c55e"
