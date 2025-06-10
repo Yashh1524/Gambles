@@ -46,7 +46,7 @@ const ProfitLossGraph = ({ data }) => {
                         name="Profit"
                     />
                     <Area
-                        type="monotone"
+                        type="linear"
                         dataKey="loss"
                         stroke="#ef4444"
                         fill="#ef4444"
