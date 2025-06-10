@@ -35,6 +35,7 @@ const MinesGame = () => {
     const [totalWageredAmount, setTotalWageredAmount] = useState(0)
     const [totalWins, setTotalWins] = useState(0)
     const [totalLose, setTotalLose] = useState(0)
+    const [revealLoading, setRevealLoading] = useState(false)
 
     const { user, setUser } = useUser();
 
@@ -170,6 +171,7 @@ const MinesGame = () => {
 
     const handleTileClick = async (index) => {
         if (!isGameStarted || revealedTiles.includes(index)) return;
+        setRevealLoading(true)
         try {
             const { data } = await api.patch("/api/games/mines/reveal-tile", { betId, tileIndex: index });
             const { isMine, revealedTiles: updated, status, multiplier, profit } = data;
@@ -198,6 +200,8 @@ const MinesGame = () => {
         } catch (err) {
             console.error("Reveal error:", err);
             toast.error("Reveal failed");
+        } finally {
+            setRevealLoading(false)
         }
     };
 
@@ -395,7 +399,7 @@ const MinesGame = () => {
 
                                 <button
                                     onClick={cashOut}
-                                    disabled={endGameLoading}
+                                    disabled={endGameLoading || revealLoading}
                                     className="w-full py-2 mb-2 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-bold shadow"
                                 >
                                     {!endGameLoading ? (

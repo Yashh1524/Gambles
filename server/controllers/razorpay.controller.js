@@ -51,6 +51,7 @@ export const createDepositOrderController = async (req, res) => {
 
     } catch (error) {
         console.error("Create Deposit Order Error:", error.message || error);
+        console.log(error)
         return res.status(500).json({ success: false, message: "Failed to create deposit order." });
     }
 };
