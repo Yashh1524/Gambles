@@ -159,6 +159,7 @@ const DiceGame = () => {
                 }));
             }
             setBets(prev => [res.data.bet, ...prev])
+            // console.log(bets)
             if (res.data.bet.isWin) {
                 setTotalWinAmount(totalWinAmount + res.data.bet.winAmount - res.data.bet.betAmount)
                 setTotalWins(totalWins + 1)

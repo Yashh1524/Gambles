@@ -45,7 +45,7 @@ export default function Sidebar() {
                 } relative`}
         >
             {/* Top bar with menu icon */}
-            <div className="px-4 py-2 shadow-xl h-[8vh] text-white flex items-center gap-5">
+            <div className="px-4 py-3 shadow-xl h-[6vh] text-white flex items-center gap-5">
                 <button onClick={() => setIsDesktopOpen((prev) => !prev)}>
                     <Menu className="h-7 w-7" />
                 </button>

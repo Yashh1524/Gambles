@@ -10,35 +10,35 @@ import {
     ReferenceLine,
 } from 'recharts';
 
-const ProfitLossGraph = ({ data }) => {
-    const formattedData = data.map((item) => ({
-        date: item.date,
-        profit: item.netBetResult > 0 ? item.netBetResult : 0,
-        loss: item.netBetResult < 0 ? item.netBetResult : 0,
-    }));
+const BetsPnLGraph = ({ bets }) => {
+    const formattedData = bets.map((item, index) => {
+        const netBetResult = item.isWin ? item.winAmount - item.betAmount : -item.betAmount;
+        return {
+            bet: `#${index + 1}`,
+            profit: netBetResult > 0 ? netBetResult.toFixed(2) : 0,
+            loss: netBetResult < 0 ? netBetResult.toFixed(2) : 0,
+        };
+    }).reverse();
 
-    // Find max absolute value to center 0
-    const maxAbs = Math.max(...data.map(d => Math.abs(d.netBetResult || 0)));
+    const maxAbs = Math.max(
+        ...formattedData.map((d) => Math.abs(d.profit || d.loss || 0))
+    );
 
     return (
-        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 pb-15 shadow-lg mb-10">
-            <h2 className="text-white text-xl font-semibold mb-4">Daily Profit / Loss</h2>
-            <ResponsiveContainer width="100%" height="98%">
+        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 pb-15 shadow-lg">
+            <h2 className="text-white text-xl font-semibold mb-4">Bet-wise Profit / Loss</h2>
+            <ResponsiveContainer width="100%" height="90%">
                 <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#334e5c" />
-                    <XAxis dataKey="date" stroke="#cbd5e1" />
+                    <XAxis dataKey="" stroke="#cbd5e1" />
                     <YAxis stroke="#cbd5e1" domain={[-maxAbs, maxAbs]} />
                     <Tooltip
                         contentStyle={{ backgroundColor: '#1e2d3d', border: 'none', color: '#fff' }}
                         labelStyle={{ color: '#f0f0f0' }}
                     />
-                    <ReferenceLine 
-                        y={0} 
-                        stroke="#f59e0b" 
-                        strokeDasharray="5 10" 
-                    />
+                    <ReferenceLine y={0} stroke="#f59e0b" strokeDasharray="5 10" />
                     <Area
-                        type="linear"
+                        type="monotone"
                         dataKey="profit"
                         stroke="#22c55e"
                         fill="#22c55e"
@@ -46,7 +46,7 @@ const ProfitLossGraph = ({ data }) => {
                         name="Profit"
                     />
                     <Area
-                        type="linear"
+                        type="monotone"
                         dataKey="loss"
                         stroke="#ef4444"
                         fill="#ef4444"
@@ -59,4 +59,4 @@ const ProfitLossGraph = ({ data }) => {
     );
 };
 
-export default ProfitLossGraph;
+export default BetsPnLGraph;
