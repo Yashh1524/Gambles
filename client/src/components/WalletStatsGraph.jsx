@@ -34,7 +34,6 @@ const WalletStatsGraph = ({ data }) => {
                     />
                     <YAxis
                         stroke="#cbd5e1"
-                        // domain={['auto', 'auto']} // This fixes Y-axis clipping
                     />
                     <Tooltip
                         contentStyle={{ backgroundColor: '#1e2d3d', border: 'none', color: '#fff' }}
@@ -59,16 +58,6 @@ const WalletStatsGraph = ({ data }) => {
                         dot={{ r: 4 }}
                         activeDot={{ r: 6 }}
                     />
-                    {/* Optional Net Result Line */}
-                    {/* {data.some(item => item.netBetResult !== undefined) && (
-                        <Line
-                            type="monotone"
-                            dataKey="netBetResult"
-                            stroke="#f43f5e"
-                            strokeWidth={2}
-                            name="Daily Profit/Loss"
-                        />
-                    )} */}
                 </LineChart>
             </ResponsiveContainer>
         </div>
