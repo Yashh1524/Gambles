@@ -28,6 +28,7 @@ const DiceGame = () => {
     const [totalWageredAmount, setTotalWageredAmount] = useState(0)
     const [totalWins, setTotalWins] = useState(0)
     const [totalLose, setTotalLose] = useState(0)
+    const [currentBets, setCurrentBets] = useState([])
 
     const sliderRef = useRef(null);
 
@@ -159,6 +160,7 @@ const DiceGame = () => {
                 }));
             }
             setBets(prev => [res.data.bet, ...prev])
+            setCurrentBets(prev => [res.data.bet, ...prev])
             // console.log(bets)
             if (res.data.bet.isWin) {
                 setTotalWinAmount(totalWinAmount + res.data.bet.winAmount - res.data.bet.betAmount)
@@ -378,6 +380,7 @@ const DiceGame = () => {
                     totalWins={totalWins}
                     totalLose={totalLose}
                     bets={bets}
+                    currentBets={currentBets}
                 />
             </div>
         </div>

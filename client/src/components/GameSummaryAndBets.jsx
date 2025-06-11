@@ -10,6 +10,7 @@ const GameSummaryAndBets = ({
     totalWins,
     totalLose,
     bets,
+    currentBets
 }) => {
     const [activeTab, setActiveTab] = useState("Bets");
 
@@ -19,36 +20,88 @@ const GameSummaryAndBets = ({
                 <div className="text-white">Loading summary...</div>
             ) : (
                 <>
-                    {/* Toggle Graph Switch */}
-                    <div className="bg-[#132631] p-1 rounded-full w-max flex">
-                        <button
-                            onClick={() => setActiveTab("Bets")}
-                            className={`px-4 py-1 rounded-full text-sm transition-all duration-200 ${
-                                activeTab === "Bets"
-                                    ? "bg-white text-black font-semibold"
-                                    : "text-gray-400"
-                            }`}
-                        >
-                            Bets PnL
-                        </button>
-                        <button
-                            onClick={() => setActiveTab("cumulative")}
-                            className={`px-4 py-1 rounded-full text-sm transition-all duration-200 ${
-                                activeTab === "cumulative"
-                                    ? "bg-white text-black font-semibold"
-                                    : "text-gray-400"
-                            }`}
-                        >
-                            Cumulative PnL
-                        </button>
-                    </div>
+                    {/* Graph for current session's bets */}
+                    <div className="bg-[#142732] rounded-2xl p-6 shadow-md space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h1 className="text-xl font-semibold text-white">Current Session's Bets</h1>
 
-                    {/* Render Graph */}
-                    {activeTab === "Bets" ? (
-                        <BetsPnLGraph bets={bets} />
-                    ) : (
-                        <CumulativePnLGraph bets={bets} />
-                    )}
+                            {/* Toggle Switch */}
+                            <div className="bg-[#0f1f29] p-1 rounded-full flex border border-gray-700">
+                                <button
+                                    onClick={() => setActiveTab("Bets")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "Bets"
+                                        ? "bg-white text-black font-semibold shadow-sm"
+                                        : "text-gray-300 hover:text-white"
+                                        }`}
+                                >
+                                    Bets PnL
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("cumulative")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "cumulative"
+                                        ? "bg-white text-black font-semibold shadow-sm"
+                                        : "text-gray-300 hover:text-white"
+                                        }`}
+                                >
+                                    Cumulative PnL
+                                </button>
+                            </div>
+                        </div>
+
+
+                        {/* Divider */}
+                        <div className="border-t border-[#1f3847]"></div>
+
+                        {/* Render Graph */}
+                        <div className="w-full">
+                            {activeTab === "Bets" ? (
+                                <BetsPnLGraph bets={currentBets} />
+                            ) : (
+                                <CumulativePnLGraph bets={currentBets} />
+                            )}
+                        </div>
+                    </div>
+                    {/* Graph for all bets */}
+                    <div className="bg-[#142732] rounded-2xl p-6 shadow-md space-y-4">
+                        <div className="flex justify-between items-center">
+                            <h1 className="text-xl font-semibold text-white">All Bets</h1>
+
+                            {/* Toggle Switch */}
+                            <div className="bg-[#0f1f29] p-1 rounded-full flex border border-gray-700">
+                                <button
+                                    onClick={() => setActiveTab("Bets")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "Bets"
+                                        ? "bg-white text-black font-semibold shadow-sm"
+                                        : "text-gray-300 hover:text-white"
+                                        }`}
+                                >
+                                    Bets PnL
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab("cumulative")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "cumulative"
+                                        ? "bg-white text-black font-semibold shadow-sm"
+                                        : "text-gray-300 hover:text-white"
+                                        }`}
+                                >
+                                    Cumulative PnL
+                                </button>
+                            </div>
+                        </div>
+
+
+                        {/* Divider */}
+                        <div className="border-t border-[#1f3847]"></div>
+
+                        {/* Render Graph */}
+                        <div className="w-full">
+                            {activeTab === "Bets" ? (
+                                <BetsPnLGraph bets={bets} />
+                            ) : (
+                                <CumulativePnLGraph bets={bets} />
+                            )}
+                        </div>
+                    </div>
 
                     {/* Summary Cards */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-white">

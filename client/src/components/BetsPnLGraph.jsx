@@ -25,7 +25,7 @@ const BetsPnLGraph = ({ bets }) => {
     );
 
     return (
-        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 pb-15 shadow-lg">
+        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 pb-15">
             <h2 className="text-white text-xl font-semibold mb-4">Bet-wise Profit / Loss</h2>
             <ResponsiveContainer width="100%" height="90%">
                 <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>

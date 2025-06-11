@@ -31,7 +31,7 @@ const CumulativePnLGraph = ({ bets }) => {
     const maxAbs = Math.max(...formattedData.map(d => Math.abs(d.totalPnL)));
 
     return (
-        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10 shadow-lg">
+        <div className="w-full h-96 bg-[#142732] rounded-2xl p-10">
             <h2 className="text-white text-xl font-semibold mb-4">Cumulative Profit / Loss</h2>
             <ResponsiveContainer width="100%" height="90%">
                 <AreaChart data={formattedData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
