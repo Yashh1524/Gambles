@@ -13,6 +13,7 @@ const GameSummaryAndBets = ({
     currentBets
 }) => {
     const [activeTab, setActiveTab] = useState("Bets");
+    const [currentBetsActiveTab, setCurrentBetsActiveTab] = useState("Bets");
 
     return (
         <div className="w-screen lg:w-full px-10 flex flex-col gap-5">
@@ -28,8 +29,8 @@ const GameSummaryAndBets = ({
                             {/* Toggle Switch */}
                             <div className="bg-[#0f1f29] p-1 rounded-full flex border border-gray-700">
                                 <button
-                                    onClick={() => setActiveTab("Bets")}
-                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "Bets"
+                                    onClick={() => setCurrentBetsActiveTab("Bets")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${currentBetsActiveTab === "Bets"
                                         ? "bg-white text-black font-semibold shadow-sm"
                                         : "text-gray-300 hover:text-white"
                                         }`}
@@ -37,8 +38,8 @@ const GameSummaryAndBets = ({
                                     Bets PnL
                                 </button>
                                 <button
-                                    onClick={() => setActiveTab("cumulative")}
-                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${activeTab === "cumulative"
+                                    onClick={() => setCurrentBetsActiveTab("cumulative")}
+                                    className={`px-5 py-1.5 text-sm rounded-full transition-all duration-200 ${currentBetsActiveTab === "cumulative"
                                         ? "bg-white text-black font-semibold shadow-sm"
                                         : "text-gray-300 hover:text-white"
                                         }`}
@@ -54,7 +55,7 @@ const GameSummaryAndBets = ({
 
                         {/* Render Graph */}
                         <div className="w-full">
-                            {activeTab === "Bets" ? (
+                            {currentBetsActiveTab === "Bets" ? (
                                 <BetsPnLGraph bets={currentBets} />
                             ) : (
                                 <CumulativePnLGraph bets={currentBets} />

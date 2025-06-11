@@ -4,8 +4,7 @@ import { toast } from "react-hot-toast";
 import api from "@/utils/api";
 import { useUser } from "@/contexts/UserContext";
 import { ImSpinner2 } from "react-icons/im";
-import { Link, useLocation } from "react-router-dom";
-import UserBetsTable from "@/components/UserBetsTable";
+import { useLocation } from "react-router-dom";
 import GameSummaryAndBets from "@/components/GameSummaryAndBets";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
@@ -36,6 +35,7 @@ const MinesGame = () => {
     const [totalWins, setTotalWins] = useState(0)
     const [totalLose, setTotalLose] = useState(0)
     const [revealLoading, setRevealLoading] = useState(false)
+    const [currentBets, setCurrentBets] = useState([])
 
     const { user, setUser } = useUser();
 
@@ -59,7 +59,6 @@ const MinesGame = () => {
     };
 
     useEffect(() => {
-
         const fetchUserBetsByGame = async () => {
             try {
                 setLoadingBets(true)
@@ -233,6 +232,8 @@ const MinesGame = () => {
             console.log(data.bet)
             setTotalWageredAmount(totalWageredAmount + data.bet.betAmount)
             setBets(prev => [data.bet, ...prev])
+            setCurrentBets(prev => [data.bet, ...prev])
+            
             // setBets(prevBets => [formattedBet, ...prevBets]);
             if (won) {
                 setTotalWinAmount(totalWinAmount + data.bet.winAmount - data.bet.betAmount)
@@ -476,6 +477,7 @@ const MinesGame = () => {
                 totalWins={totalWins}
                 totalLose={totalLose}
                 bets={bets}
+                currentBets={currentBets}
             />
         </div>
     );
