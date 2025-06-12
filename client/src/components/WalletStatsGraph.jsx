@@ -12,12 +12,19 @@ import {
 } from 'recharts';
 
 const WalletStatsGraph = ({ data }) => {
+    // Convert string values to numbers
+    const formattedData = data.map((item) => ({
+        ...item,
+        walletAmount: parseFloat(item.walletAmount),
+        actualWalletAfterBets: parseFloat(item.actualWalletAfterBets),
+    }));
+
     return (
         <div className="w-full h-96 bg-[#142732] rounded-2xl p-5 shadow-lg mb-10">
             <h2 className="text-white text-xl font-semibold mb-4">Wallet Overview</h2>
             <ResponsiveContainer width="100%" height="92%">
                 <LineChart
-                    data={data}
+                    data={formattedData}
                     margin={{ top: 20, right: 50, left: 10, bottom: 5 }}
                 >
                     <ReferenceLine
@@ -34,6 +41,7 @@ const WalletStatsGraph = ({ data }) => {
                     />
                     <YAxis
                         stroke="#cbd5e1"
+                        domain={['auto', 'auto']} // Automatically adjusts range
                     />
                     <Tooltip
                         contentStyle={{ backgroundColor: '#1e2d3d', border: 'none', color: '#fff' }}
