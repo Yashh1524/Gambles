@@ -1,0 +1,1236 @@
+{
+	"info": {
+		"_postman_id": "38024301-344a5822-00f0-45e0-88e4-47e63f9cfcd6",
+		"name": "Gamble",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "UserController",
+			"item": [
+				{
+					"name": "verify user",
+					"id": "38024301-bdbdf652-0f43-4f0f-b9be-e3c74f79038a",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/verify-user/172bb93f42cb63f8c809d292acc7db73a68a10b7",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"verify-user",
+								"172bb93f42cb63f8c809d292acc7db73a68a10b7"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user by email",
+					"id": "38024301-ccb20d2a-ba6f-4ecf-b297-6cacce856ee2",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/get-user-by-email",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"get-user-by-email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get current user details",
+					"id": "38024301-8b125134-e7d4-41c9-8161-a4858047e733",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/my-details",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"my-details"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "is-authenticated",
+					"id": "38024301-846ee03b-7963-4048-9ca1-78dbb5d4c1ca",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/is-auth",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"is-auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-day-wise-wallet-stats",
+					"id": "38024301-672d561d-e73c-4c9d-8941-65884ea3bc8f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/get-day-wise-wallet-stats",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"get-day-wise-wallet-stats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"id": "38024301-45c71da3-03e1-4222-826e-c095cea56065",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Yashh1524\",\r\n    \"email\": \"yashxerox15@gmail.com\",\r\n    \"password\": \"Yashh@1524\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"id": "38024301-38bc19cb-0139-48c8-be76-df5649acd480",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\",\r\n    \"password\": \"123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"id": "38024301-0d6479c0-5c48-4c0a-9faf-8cb8882eaa04",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\",\r\n    \"password\": \"Yashh@1524\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "resend verification mail",
+					"id": "38024301-15dba30f-8ac5-41f9-b2e3-5ec456c43248",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/resend-verification",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"resend-verification"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "refresh access token",
+					"id": "38024301-647725d2-1b85-4e01-9d23-6626d9893408",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/user/refresh-token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"refresh-token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "send reset password OTP",
+					"id": "38024301-7dd94b76-e743-4238-80a2-38a8a9d041a9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/reset-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"reset-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify reset password OTP",
+					"id": "38024301-892a3e43-97e9-4a6c-8795-eca9e3c389bd",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\",\r\n    \"otp\": \"826045\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/verify-reset-password-otp",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"verify-reset-password-otp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "reset new password",
+					"id": "38024301-0bc7c6c5-8e0d-471d-9191-39da7ae6a03f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"yashxerox15@gmail.com\",\r\n    \"newPassword\": \"123456\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/set-new-password",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"set-new-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deposit money to wallet",
+					"id": "38024301-6b1e7d55-92b9-4d72-b140-a81f836b5be9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"amount\": 30000\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/user/deposit-money",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"user",
+								"deposit-money"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "38024301-ce1e4952-fed0-4623-b3fe-6bb59f564caf"
+		},
+		{
+			"name": "BetController",
+			"item": [
+				{
+					"name": "fetch bets by user",
+					"id": "38024301-084d7bf1-a57b-4801-a950-ddb8af1a1b8d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bet/fetch-bets-by-user",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"fetch-bets-by-user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fetch all bet",
+					"id": "38024301-e19004ef-ab16-4fce-868d-e365562401cc",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/bet/fetch-all-bet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"fetch-all-bet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-bets-stats-by-games",
+					"id": "38024301-a5874b6c-27a0-4512-b072-4d4189219860",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"gameId\": \"6822f03212a5549e72f26829\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bet/get-user-totalwin-and-winningstreak-by-game",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"get-user-totalwin-and-winningstreak-by-game"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get-user-tota-bets-stats",
+					"id": "38024301-eaa14fc6-2262-4e57-b818-982b50aa2cc3",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/bet/get-user-totalwin-and-winningstreak",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"get-user-totalwin-and-winningstreak"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update bet",
+					"id": "38024301-89989d77-4353-4f45-83e3-50cb23706dd6",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"winAmount\": 300,\r\n  \"isWin\": false,\r\n  \"status\": \"cancelled\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bet/update-bet/680bbdf4a5829c5c32d95a08",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"update-bet",
+								"680bbdf4a5829c5c32d95a08"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create bet",
+					"id": "38024301-0cc3311a-462b-431b-b236-24a37782f2f1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"gameType\": \"dice\",\r\n  \"betAmount\": 100,\r\n  \"winAmount\": 200,\r\n  \"isWin\": true,\r\n  \"gameData\": {\r\n    \"rolled\": 6,\r\n    \"guess\": 6\r\n  },\r\n  \"status\": \"completed\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bet/create-bet",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"create-bet"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "fetch user bet by game",
+					"id": "38024301-da9284a3-f6d4-49a1-9e33-331db2f204f0",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"gameType\": \"dice\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/bet/fetch-user-bet-by-game",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"bet",
+								"fetch-user-bet-by-game"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "38024301-984d7a3e-28a1-4aae-b12d-d45091035454"
+		},
+		{
+			"name": "razorpay controller",
+			"item": [
+				{
+					"name": "withdraw-payout-razorpay",
+					"id": "38024301-2a177d47-30fe-40fa-ad8d-53dbdc3fe48f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n \"transactionId\": \"6821f4e19e0817f55d6172b5\"   \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/razorpay/withdraw-payout-razorpay",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"razorpay",
+								"withdraw-payout-razorpay"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create-deposit-order",
+					"id": "38024301-9a430a70-cf03-49aa-9ef9-d818df00278c",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 500\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/razorpay/create-deposit-order",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"razorpay",
+								"create-deposit-order"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "verify-deposit-payment",
+					"id": "38024301-208d2ee3-57b3-4e68-82e1-7c485338f934",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"razorpay_order_id\": \"order_QTakKh8djVSFDK\",\r\n  \"razorpay_payment_id\": \"pay_QTbJZy1MvzABCD\",\r\n  \"razorpay_signature\": \"d99f183f2623b78b7c1c87f4b96c34b7f20eaf43c5b86c9d0f0dfd18e6fd5bfa\",\r\n  \"amount\": 500\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/razorpay/verify-deposit-payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"razorpay",
+								"verify-deposit-payment"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "38024301-1268f890-675e-41bf-a3de-c38cc110b640"
+		},
+		{
+			"name": "transaction controller",
+			"item": [
+				{
+					"name": "get-all-transaction-by-user-id",
+					"id": "38024301-ca284bee-353a-4517-9f98-25fe0a6df795",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/transaction/get-all-transaction-by-user-id",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"transaction",
+								"get-all-transaction-by-user-id"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create withdraw(Bank) transaction",
+					"id": "38024301-4503d8e8-54c5-45c2-9b20-5d8a8b1f2e04",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 500,\r\n  \"type\": \"WITHDRAW\",\r\n  \"accountHolderName\": \"John Doe\",\r\n  \"accountNumber\": \"1234567890\",\r\n  \"ifscCode\": \"SBIN0000123\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/transaction/create-transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"transaction",
+								"create-transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create withdraw(UPI id) transaction Copy",
+					"id": "38024301-67bcecc6-027d-480b-a65d-4a1a70aafe0f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 500,\r\n  \"type\": \"WITHDRAW\",\r\n  \"upiId\": \"john@upi\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/transaction/create-transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"transaction",
+								"create-transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create deposit transaction",
+					"id": "38024301-319757ee-59b7-4231-bbe4-fa65dbbb6122",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"amount\": 1000,\r\n  \"type\": \"DEPOSIT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/transaction/create-transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"transaction",
+								"create-transaction"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "update transaction status",
+					"id": "38024301-4f3142f7-d949-4406-9e21-eb7799a8ee62",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"transactionId\": \"663f5a1973f1417b70b8e889\",\r\n  \"status\": \"SUCCESS\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/api/transaction/create-transaction",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"transaction",
+								"create-transaction"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "38024301-5becf532-8d6c-4000-89ac-3c43e41e238a"
+		},
+		{
+			"name": "Games",
+			"item": [
+				{
+					"name": "Mines",
+					"item": [
+						{
+							"name": "pending-mine",
+							"id": "38024301-0c4b8d66-fc67-4d8d-84b6-1bcda61aaeee",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:3000/api/games/mines/pending-mine",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"games",
+										"mines",
+										"pending-mine"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "start-mine",
+							"id": "38024301-f5b34737-cc79-4b6d-8dde-a3e6e280661d",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"amount\": 100,\r\n  \"minesCount\": 3\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/games/mines/start-mine",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"games",
+										"mines",
+										"start-mine"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "end-mine",
+							"id": "38024301-e94eb5aa-b181-4795-98b7-f7aacfb0abc7",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"betId\": \"6832f4e35e974fb25f6303b5\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/games/mines/end-mine",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"games",
+										"mines",
+										"end-mine"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "reveal-tile",
+							"id": "38024301-6179f1b9-0cd4-49d6-ace0-f6df7458a944",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"betId\": \"6832f4e35e974fb25f6303b5\",\r\n  \"tileIndex\": 7\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/games/mines/reveal-tile",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"games",
+										"mines",
+										"reveal-tile"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "38024301-a42762f7-ab32-4b10-9349-f39de6933fbd"
+				},
+				{
+					"name": "Dice",
+					"item": [
+						{
+							"name": "roll-dice",
+							"id": "38024301-5954f88e-9117-41c1-a0b7-8f53c3ff042b",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"amount\": 100,\r\n  \"condition\": \"above\",\r\n  \"target\": 30\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:3000/api/games/dice/roll-dice",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"api",
+										"games",
+										"dice",
+										"roll-dice"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"id": "38024301-eb7dc762-6ec8-4dad-b8ae-2960dc8e9a14"
+				},
+				{
+					"name": "Get All Games",
+					"id": "38024301-c7826b3a-f41a-455e-bda1-4019d367d5d4",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/api/games/get-all-games",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"api",
+								"games",
+								"get-all-games"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "38024301-865d3386-b4fa-4a24-9470-7a97b76f7b30"
+		}
+	]
+}
