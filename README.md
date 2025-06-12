@@ -6,6 +6,9 @@
 
 ---
 
+🔗 [Demo Video](https://youtu.be/KF0jBhC7FsM)
+🔗 [Live Link](https://gambles-gilt.vercel.app/)
+
 ## 🚀 Features
 
 - 🔐 JWT-based authentication with secure refresh tokens
