@@ -1,4 +1,4 @@
-# 🎮 GamBles – Stake-Inspired Betting App (MERN Stack)
+# 🎮 GamBles – Stake-Inspired Betting App(MERN Stack)
 
 **GamBles** is a full-stack betting game platform inspired by Stake.com, built using the **MERN stack** (MongoDB, Express.js, React, Node.js). It features wallet-based betting with a Mines and Dice game, user authentication, wallet tracking, and transaction history — all wrapped in a modern, responsive UI.
 
