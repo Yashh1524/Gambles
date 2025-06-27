@@ -13,7 +13,7 @@
 
 - 🔐 JWT-based authentication with secure refresh tokens
 - 🧩 Mines game & 🎲 Dice game with profit logic
-- 💰 Real-time wallet system and day-wise wallet graph
+- 💰 Real-time wallet system and day-wise and bet-wise wallet graph
 - 📊 User bet stats and winning streak tracking
 - 📤 Deposit/withdraw transactions with Razorpay simulation
 - 🛡️ Admin view and user activity logging
