@@ -1,4 +1,4 @@
-# 🎮 GamBles – Stake-Inspired Betting App (MERN Stack)
+# 🎮 GamBles – Stake-Inspired Betting App(MERN Stack)
 
 **GamBles** is a full-stack betting game platform inspired by Stake.com, built using the **MERN stack** (MongoDB, Express.js, React, Node.js). It features wallet-based betting with a Mines and Dice game, user authentication, wallet tracking, and transaction history — all wrapped in a modern, responsive UI.
 
@@ -6,11 +6,14 @@
 
 ---
 
+🔗 [Demo Video](https://youtu.be/KF0jBhC7FsM)
+🔗 [Live Link](https://gambles-gilt.vercel.app/)
+
 ## 🚀 Features
 
 - 🔐 JWT-based authentication with secure refresh tokens
 - 🧩 Mines game & 🎲 Dice game with profit logic
-- 💰 Real-time wallet system and day-wise wallet graph
+- 💰 Real-time wallet system and day-wise and bet-wise wallet graph
 - 📊 User bet stats and winning streak tracking
 - 📤 Deposit/withdraw transactions with Razorpay simulation
 - 🛡️ Admin view and user activity logging

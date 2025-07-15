@@ -297,7 +297,7 @@ const MinesGame = () => {
                             </div>
                             <div className="space-y-2">
                                 <label className="block text-sm text-gray-300">Bet Amount (₹)</label>
-                                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+                                <div className="flex flex-col items-stretch gap-2">
                                     <input
                                         type="number"
                                         step="0.01"
