@@ -32,6 +32,7 @@ export default function RegisterPage() {
             } else {
                 toast.success(response?.data?.message);
                 navigate("/")
+                window.location.reload();
             }
         } catch (error) {
             console.error("Registration failed:", error);

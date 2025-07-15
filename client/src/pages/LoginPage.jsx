@@ -34,6 +34,7 @@ export default function LoginPage() {
             setUser(userRes.data.data);
 
             navigate("/");
+            window.location.reload();
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
         }
