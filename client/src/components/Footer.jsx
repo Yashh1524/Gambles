@@ -18,7 +18,7 @@ export default function Footer() {
                     <a href="https://x.com/YaShh1524" target="_blank" rel="noopener noreferrer" className="hover:text-blue-400">
                         <FaXTwitter />
                     </a>
-                    <a href="https://linkedin.com/in/yashbhut1524/" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
+                    <a href="https://www.linkedin.com/in/yashh1524" target="_blank" rel="noopener noreferrer" className="hover:text-blue-600">
                         <FaLinkedin />
                     </a>
                     <a href="https://github.com/Yashh1524" target="_blank" rel="noopener noreferrer" className="hover:text-gray-200">
@@ -29,3 +29,4 @@ export default function Footer() {
         </footer>
     );
 }
+
